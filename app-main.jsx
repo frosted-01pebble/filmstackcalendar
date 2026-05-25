@@ -874,6 +874,101 @@ function SB_ListView({ weeks, expanded, toggle, user }) {
 
 }
 
+// ── Add-to-calendar picker ────────────────────────────────────────
+function SB_AddToCalMenu({ e, onClose }) {
+  const ref = React.useRef(null);
+
+  // Close on outside click
+  React.useEffect(() => {
+    const handler = (ev) => { if (ref.current && !ref.current.contains(ev.target)) onClose(); };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [onClose]);
+
+  // Build date strings
+  const dt  = new Date(e.sortDate + 'T19:00:00');
+  const end = new Date(dt.getTime() + 2 * 3600 * 1000);
+  const pad = (n) => String(n).padStart(2, '0');
+  const fmtLocal = (d) =>
+    `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+  const title    = encodeURIComponent(e.title);
+  const loc      = encodeURIComponent((e.venue ? e.venue + ', ' : '') + e.location);
+  const desc     = encodeURIComponent(e.desc || '');
+  const gCalUrl  = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${fmtLocal(dt)}/${fmtLocal(end)}&details=${desc}&location=${loc}`;
+  const olWebUrl = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${title}&startdt=${dt.toISOString()}&enddt=${end.toISOString()}&body=${desc}&location=${loc}`;
+
+  const options = [
+    {
+      label: 'Google Calendar',
+      icon: (
+        <svg width="16" height="16" viewBox="0 0 48 48" fill="none">
+          <path fill="#4285F4" d="M24 20.5v7h7.5c-.6 3-3.2 5-7.5 5-4.7 0-8.5-3.8-8.5-8.5s3.8-8.5 8.5-8.5c2.1 0 4 .8 5.5 2l5-5C31.5 10 28 8.5 24 8.5 14.9 8.5 7.5 15.9 7.5 25S14.9 41.5 24 41.5c9.4 0 15.5-6.6 15.5-15.9 0-1-.1-2-.3-3.1H24z"/>
+        </svg>
+      ),
+      action: () => { window.open(gCalUrl, '_blank'); onClose(); },
+    },
+    {
+      label: 'Apple Calendar (.ics)',
+      icon: (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="4" width="18" height="16" rx="2"/>
+          <path d="M16 2v4M8 2v4M3 9h18"/>
+          <path d="M8 13h2v4H8z" fill="currentColor" stroke="none"/>
+        </svg>
+      ),
+      action: () => { window.CalUtils.downloadICS(e); onClose(); },
+    },
+    {
+      label: 'Outlook (.ics)',
+      icon: (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="2" y="3" width="14" height="14" rx="2"/>
+          <path d="M22 5l-9 7-3-2"/>
+          <path d="M16 13h6M16 17h6M16 21h4"/>
+        </svg>
+      ),
+      action: () => { window.CalUtils.downloadICS(e); onClose(); },
+    },
+    {
+      label: 'Outlook.com',
+      icon: (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2"/>
+          <path d="M22 7l-10 7L2 7"/>
+        </svg>
+      ),
+      action: () => { window.open(olWebUrl, '_blank'); onClose(); },
+    },
+  ];
+
+  return (
+    <div ref={ref} style={{
+      position: 'absolute', bottom: 'calc(100% + 8px)', left: 0,
+      background: SB_COLORS.paper, border: `1px solid ${SB_COLORS.rule}`,
+      borderRadius: 10, boxShadow: '0 8px 28px rgba(0,0,0,0.13)',
+      minWidth: 210, zIndex: 100, overflow: 'hidden',
+    }}>
+      <div style={{
+        padding: '8px 14px 6px',
+        fontFamily: SB_FONTS.brand, fontSize: 10.5, fontWeight: 700,
+        color: SB_COLORS.mute, textTransform: 'uppercase', letterSpacing: 0.08,
+        borderBottom: `1px solid ${SB_COLORS.ruleSoft}`,
+      }}>Add to calendar</div>
+      {options.map((o) => (
+        <button key={o.label} onClick={(ev) => { ev.stopPropagation(); o.action(); }} style={{
+          display: 'flex', alignItems: 'center', gap: 10, width: '100%',
+          appearance: 'none', border: 'none', background: 'transparent', cursor: 'pointer',
+          fontFamily: SB_FONTS.brand, fontSize: 13.5, fontWeight: 500, color: SB_COLORS.ink,
+          padding: '9px 14px', textAlign: 'left',
+        }}
+        onMouseEnter={(ev) => ev.currentTarget.style.background = SB_COLORS.paperAlt}
+        onMouseLeave={(ev) => ev.currentTarget.style.background = 'transparent'}
+        >{o.icon}{o.label}</button>
+      ))}
+    </div>
+  );
+}
+
 function SB_EventCard({ event: e, open, onToggle, user }) {
   const color = SB_SECTION_COLOR(e.section);
   const tint = SB_SECTION_TINT(e.section);
@@ -885,6 +980,7 @@ function SB_EventCard({ event: e, open, onToggle, user }) {
   const isRolling = e.urgency === 'rolling' || e.urgency === 'ongoing';
   const isPending = e.status === 'pending';
   const [hover, setHover] = React.useState(false);
+  const [calMenuOpen, setCalMenuOpen] = React.useState(false);
   const canModerate = user && user.role === 'Editor';
   const canDelete = user && e.id && (e.submittedBy === user.email || canModerate);
 
@@ -994,25 +1090,30 @@ function SB_EventCard({ event: e, open, onToggle, user }) {
           }}>{e.desc}</div>
             <div style={{ display: 'flex', gap: 8, marginTop: 16, flexWrap: 'wrap' }}>
               {(e.links || []).map((l, i) =>
-            <a key={i} href={l.url} onClick={(ev) => ev.preventDefault()} style={{
-              fontFamily: SB_FONTS.brand, fontSize: 13, fontWeight: 600,
-              color: SB_COLORS.paper, background: SB_COLORS.ink,
-              padding: '7px 14px', borderRadius: 999, letterSpacing: -0.1,
-              textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6
-            }}>{l.label}
+                <a key={i} href={l.url} target="_blank" rel="noreferrer"
+                   onClick={(ev) => ev.stopPropagation()} style={{
+                  fontFamily: SB_FONTS.brand, fontSize: 13, fontWeight: 600,
+                  color: SB_COLORS.paper, background: SB_COLORS.ink,
+                  padding: '7px 14px', borderRadius: 999, letterSpacing: -0.1,
+                  textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6
+                }}>{l.label}
                   <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M2 6h8M6 2l4 4-4 4" /></svg>
                 </a>
-            )}
-              <button onClick={(ev) => {ev.stopPropagation();window.CalUtils.downloadICS(e);}} style={{
-              appearance: 'none', border: `1px solid ${SB_COLORS.rule}`,
-              background: SB_COLORS.paper, cursor: 'pointer',
-              fontFamily: SB_FONTS.brand, fontSize: 13, fontWeight: 600,
-              color: SB_COLORS.inkSoft, padding: '6px 12px', borderRadius: 999,
-              display: 'inline-flex', alignItems: 'center', gap: 6
-            }}>
-                <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="3" width="10" height="9" rx="1" /><path d="M2 5.5h10M5 1.5v3M9 1.5v3" /></svg>
-                Add to calendar
-              </button>
+              )}
+              <div style={{ position: 'relative' }}>
+                <button onClick={(ev) => { ev.stopPropagation(); setCalMenuOpen((o) => !o); }} style={{
+                  appearance: 'none', border: `1px solid ${SB_COLORS.rule}`,
+                  background: calMenuOpen ? SB_COLORS.paperAlt : SB_COLORS.paper, cursor: 'pointer',
+                  fontFamily: SB_FONTS.brand, fontSize: 13, fontWeight: 600,
+                  color: SB_COLORS.inkSoft, padding: '6px 12px', borderRadius: 999,
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                }}>
+                  <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="3" width="10" height="9" rx="1" /><path d="M2 5.5h10M5 1.5v3M9 1.5v3" /></svg>
+                  Add to calendar
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 2 }}><path d="M2 3.5l3 3 3-3"/></svg>
+                </button>
+                {calMenuOpen && <SB_AddToCalMenu e={e} onClose={() => setCalMenuOpen(false)} />}
+              </div>
               {canModerate && isPending &&
             <>
                   <button onClick={(ev) => {ev.stopPropagation();window.FSDDStore.setSubmissionStatus(e.id, 'published');}} style={{
