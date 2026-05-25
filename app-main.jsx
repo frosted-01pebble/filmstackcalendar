@@ -76,7 +76,7 @@ function FilmStackCalendarApp() {
   const [showPast, setShowPast] = React.useState(false);
   const [view, setView] = React.useState('list');
   const [query, setQuery] = React.useState('');
-  const [cities, setCities] = React.useState(() => new Set(['New York', 'Los Angeles', 'Online', 'Elsewhere']));
+  const [cities, setCities] = React.useState(() => new Set(['New York', 'Los Angeles', 'Elsewhere', 'Online']));
   const [expanded, setExpanded] = React.useState(new Set());
   const [filterStuck, setFilterStuck] = React.useState(false);
   const [monthOffset, setMonthOffset] = React.useState(0);
@@ -684,9 +684,9 @@ function SB_FilterBar({ section, setSection, showPast, setShowPast, cities, setC
   // (e.g. label "NYC", value "New York").
   const cityOpts = [
     { value: 'New York',    label: 'NYC' },
-    { value: 'Los Angeles', label: 'Los Angeles' },
+    { value: 'Los Angeles', label: 'LA' },
+    { value: 'Elsewhere',   label: 'World' },
     { value: 'Online',      label: 'Online' },
-    { value: 'Elsewhere',   label: 'Elsewhere' },
   ];
   const toggleCity = (v) => setCities((prev) => {
     const next = new Set(prev);
@@ -1076,7 +1076,7 @@ function SB_EventCard({ event: e, open, onToggle, user }) {
 
 // ───────────────────── Calendar grid ─────────────────────
 function SB_CalendarView({ events, monthOffset, setMonthOffset }) {
-  const base = new Date(window.TODAY);base.setDate(1);
+  const base = new Date(window.TODAY); base.setDate(1);
   base.setMonth(base.getMonth() + monthOffset);
   const monthName = base.toLocaleString('en-US', { month: 'long', year: 'numeric' });
   const firstDow = (new Date(base.getFullYear(), base.getMonth(), 1).getDay() + 6) % 7;
@@ -1090,10 +1090,13 @@ function SB_CalendarView({ events, monthOffset, setMonthOffset }) {
   }
   while (cells.length % 7 !== 0) cells.push({ blank: true });
 
+  const sharedGrid = { display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)' };
+
   return (
-    <div>
+    <div style={{ width: '100%' }}>
+      {/* Month header + nav */}
       <div style={{
-        display: 'flex', alignItems: 'baseline', gap: 12, paddingBottom: 18,
+        display: 'flex', alignItems: 'center', gap: 12, paddingBottom: 18,
         borderBottom: `1px solid ${SB_COLORS.rule}`
       }}>
         <div style={{
@@ -1102,80 +1105,107 @@ function SB_CalendarView({ events, monthOffset, setMonthOffset }) {
         }}>{monthName}</div>
         <div style={{ flex: 1 }} />
         {[
-        { label: '← Prev', onClick: () => setMonthOffset(monthOffset - 1), primary: false },
-        { label: 'Today', onClick: () => setMonthOffset(0), primary: monthOffset !== 0 },
-        { label: 'Next →', onClick: () => setMonthOffset(monthOffset + 1), primary: false }].
-        map((b, i) =>
-        <button key={i} onClick={b.onClick} style={{
-          appearance: 'none', cursor: 'pointer',
-          fontFamily: SB_FONTS.brand, fontSize: 13, fontWeight: 600,
-          padding: '6px 14px', borderRadius: 999,
-          background: b.primary ? SB_COLORS.ink : SB_COLORS.paper,
-          color: b.primary ? SB_COLORS.paper : SB_COLORS.inkSoft,
-          border: b.primary ? 'none' : `1px solid ${SB_COLORS.rule}`
-        }}>{b.label}</button>
+          { label: '← Prev', onClick: () => setMonthOffset(monthOffset - 1), primary: false },
+          { label: 'Today',  onClick: () => setMonthOffset(0), primary: monthOffset !== 0 },
+          { label: 'Next →', onClick: () => setMonthOffset(monthOffset + 1), primary: false },
+        ].map((b, i) =>
+          <button key={i} onClick={b.onClick} style={{
+            appearance: 'none', cursor: 'pointer',
+            fontFamily: SB_FONTS.brand, fontSize: 13, fontWeight: 600,
+            padding: '6px 14px', borderRadius: 999,
+            background: b.primary ? SB_COLORS.ink : SB_COLORS.paper,
+            color: b.primary ? SB_COLORS.paper : SB_COLORS.inkSoft,
+            border: b.primary ? 'none' : `1px solid ${SB_COLORS.rule}`,
+          }}>{b.label}</button>
         )}
       </div>
+
+      {/* Calendar grid */}
       <div style={{
-        display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)',
-        background: SB_COLORS.paper, marginTop: 16,
-        border: `1px solid ${SB_COLORS.rule}`, borderRadius: 8, overflow: 'hidden'
+        ...sharedGrid,
+        marginTop: 16,
+        border: `1px solid ${SB_COLORS.rule}`,
+        borderRadius: 8,
+        overflow: 'hidden',
+        width: '100%',
       }}>
+        {/* Day-name header row */}
         {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d, i) =>
-        <div key={d} style={{
-          padding: '10px 12px', fontFamily: SB_FONTS.brand, fontSize: 12,
-          fontWeight: 600, color: SB_COLORS.mute, textTransform: 'uppercase',
-          letterSpacing: 0.06, background: SB_COLORS.paperAlt,
-          borderBottom: `1px solid ${SB_COLORS.rule}`,
-          borderRight: i !== 6 ? `1px solid ${SB_COLORS.rule}` : 'none'
-        }}>{d}</div>
+          <div key={d} style={{
+            padding: '10px 12px',
+            fontFamily: SB_FONTS.brand, fontSize: 12, fontWeight: 600,
+            color: SB_COLORS.mute, textTransform: 'uppercase', letterSpacing: 0.06,
+            background: SB_COLORS.paperAlt,
+            borderBottom: `1px solid ${SB_COLORS.rule}`,
+            borderRight: i !== 6 ? `1px solid ${SB_COLORS.rule}` : 'none',
+          }}>{d}</div>
         )}
-        {cells.map((c, i) =>
-        <div key={i} style={{
-          minHeight: 118, padding: '10px 12px',
-          borderRight: i % 7 !== 6 ? `1px solid ${SB_COLORS.rule}` : 'none',
-          borderBottom: `1px solid ${SB_COLORS.rule}`,
-          background: c.isToday ? SB_COLORS.paperAlt : SB_COLORS.paper
-        }}>
-            {!c.blank &&
-          <>
-                <div style={{
-              fontFamily: SB_FONTS.brand, fontSize: 16,
-              fontWeight: c.isToday ? 800 : 600,
-              color: SB_COLORS.ink, letterSpacing: -0.2, marginBottom: 4,
-              fontVariantNumeric: 'tabular-nums'
+
+        {/* Date cells — all rows uniform height via align-items stretch (default) */}
+        {cells.map((c, i) => {
+          const col = i % 7;
+          const totalRows = cells.length / 7;
+          const row = Math.floor(i / 7);
+          const isLastRow = row === totalRows - 1;
+          return (
+            <div key={i} style={{
+              minHeight: 130,
+              padding: '10px 12px',
+              boxSizing: 'border-box',
+              borderRight: col !== 6 ? `1px solid ${SB_COLORS.rule}` : 'none',
+              borderBottom: !isLastRow ? `1px solid ${SB_COLORS.rule}` : 'none',
+              background: c.isToday ? SB_COLORS.paperAlt : (c.blank ? SB_COLORS.paperAlt : SB_COLORS.paper),
+              opacity: c.blank ? 0.4 : 1,
             }}>
-                  {c.d}{c.isToday && <span style={{ fontFamily: SB_FONTS.brand, fontSize: 10.5, fontWeight: 700, marginLeft: 6, color: SB_COLORS.warning, textTransform: 'uppercase', letterSpacing: 0.06 }}>· today</span>}
+              {!c.blank && <>
+                <div style={{
+                  fontFamily: SB_FONTS.brand, fontSize: 15,
+                  fontWeight: c.isToday ? 800 : 500,
+                  color: c.isToday ? SB_COLORS.ink : SB_COLORS.inkSoft,
+                  letterSpacing: -0.2, marginBottom: 6,
+                  fontVariantNumeric: 'tabular-nums',
+                  display: 'flex', alignItems: 'center', gap: 5,
+                }}>
+                  <span style={{
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                    width: c.isToday ? 26 : 'auto', height: c.isToday ? 26 : 'auto',
+                    borderRadius: '50%',
+                    background: c.isToday ? SB_COLORS.ink : 'transparent',
+                    color: c.isToday ? SB_COLORS.paper : 'inherit',
+                    fontWeight: c.isToday ? 800 : 500,
+                  }}>{c.d}</span>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                  {c.dayEvents.slice(0, 3).map((e, j) =>
-              <div key={j} style={{
-                display: 'flex', alignItems: 'center', gap: 5,
-                fontFamily: SB_FONTS.brand, fontSize: 11, fontWeight: 500,
-                color: SB_COLORS.inkSoft,
-                overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'
-              }}>
+                  {c.dayEvents.slice(0, 4).map((e, j) =>
+                    <div key={j} style={{
+                      display: 'flex', alignItems: 'center', gap: 5,
+                      fontFamily: SB_FONTS.brand, fontSize: 11, fontWeight: 500,
+                      color: SB_COLORS.inkSoft,
+                      overflow: 'hidden', whiteSpace: 'nowrap',
+                    }}>
                       <span style={{
-                  flex: '0 0 5px', width: 5, height: 5, borderRadius: '50%',
-                  background: SB_SECTION_COLOR(e.section)
-                }} />
-                      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{e.title}</span>
+                        flex: '0 0 6px', width: 6, height: 6, borderRadius: 2,
+                        background: SB_SECTION_COLOR(e.section),
+                      }} />
+                      <span style={{
+                        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1,
+                      }}>{e.title}</span>
                     </div>
-              )}
-                  {c.dayEvents.length > 3 &&
-              <div style={{
-                fontFamily: SB_FONTS.brand, fontSize: 10.5, color: SB_COLORS.mute,
-                paddingLeft: 10, fontWeight: 500
-              }}>+ {c.dayEvents.length - 3} more</div>
-              }
+                  )}
+                  {c.dayEvents.length > 4 &&
+                    <div style={{
+                      fontFamily: SB_FONTS.brand, fontSize: 10.5, color: SB_COLORS.mute,
+                      paddingLeft: 11, fontWeight: 500,
+                    }}>+{c.dayEvents.length - 4} more</div>
+                  }
                 </div>
-              </>
-          }
-          </div>
-        )}
+              </>}
+            </div>
+          );
+        })}
       </div>
-    </div>);
-
+    </div>
+  );
 }
 
 // ───────────────────── Map view ─────────────────────
