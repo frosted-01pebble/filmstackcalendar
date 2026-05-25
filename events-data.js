@@ -6,16 +6,6 @@ window.TODAY = new Date('2026-05-24T12:00:00');
 window.EVENTS = [
   // ─── This week / urgent ───────────────────────────────────────────
   {
-    sortDate: '2026-05-24', dateDisplay: 'May 24 · 8:00 PM ET',
-    urgency: 'today', section: 'screenings', sectionLabel: 'Screening',
-    title: 'Bushwick Daily Microcinema · Vol. 14',
-    location: 'New York', city: 'New York',
-    venue: 'Bushwick Daily',
-    desc: 'Sixteen new short works on 16mm and digital, programmed by the Bushwick Daily collective. Sliding scale $5–15. BYO drink, snacks provided. Q&A with five of the filmmakers after the program.',
-    links: [{ label: 'RSVP', url: '#' }, { label: 'Program PDF', url: '#' }],
-    credit: 'SS',
-  },
-  {
     sortDate: '2026-05-25', dateDisplay: 'May 25 · 7:30 PM ET',
     urgency: 'soon', section: 'screenings', sectionLabel: 'Screening',
     title: 'Chantal Akerman: News from Home',
@@ -78,16 +68,6 @@ window.EVENTS = [
     credit: 'ARB',
   },
   {
-    sortDate: '2026-06-04', dateDisplay: 'Jun 4 · 7:30 PM ET',
-    urgency: 'upcoming', section: 'events', sectionLabel: 'Event',
-    title: 'FilmStack 1:1 Live — Kelly Reichardt',
-    location: 'New York', city: 'New York',
-    venue: 'The Public Theater',
-    desc: 'Sara\'s Soliloquies hosts. 90 minutes of conversation, 30 minutes of audience Q&A. Recording available to subscribers afterward.',
-    links: [{ label: 'Tickets', url: '#' }, { label: 'Livestream', url: '#' }],
-    credit: 'SS',
-  },
-  {
     sortDate: '2026-06-07', dateDisplay: 'Jun 7 · 4:00 PM ET',
     urgency: 'upcoming', section: 'screenings', sectionLabel: 'Screening',
     title: 'Open City Doc Fest · NYC Showcase',
@@ -100,13 +80,13 @@ window.EVENTS = [
 
   // ─── Week of June 8 ───────────────────────────────────────────────
   {
-    sortDate: '2026-06-11', dateDisplay: 'Jun 11 · 7:30 PM ET',
-    urgency: 'upcoming', section: 'screenings', sectionLabel: 'Screening',
-    title: 'WTF-Stop LES Microcinema',
-    location: 'New York', city: 'New York',
-    venue: 'WTF-Stop',
-    desc: 'Monthly experimental short program. This month\'s theme: "Domestic Interiors." Twelve films, 88 minutes. $7 at the door.',
-    links: [{ label: 'RSVP', url: '#' }],
+    sortDate: '2026-06-11', dateDisplay: 'Jun 11 · Doors 7:30, screening 8:30 PM ET',
+    urgency: 'upcoming', section: 'screenings', sectionLabel: 'Pop-Up',
+    title: 'Inaugural Screening — WTF-Stop LES Microcinema',
+    location: 'Lower East Side · New York', city: 'New York',
+    venue: 'ETET, Lower East Side',
+    desc: 'The brand-new FilmStack pop-up microcinema presents its inaugural screening: short films followed by filmmaker interviews. Doors 7:30 PM, screening 8:30 PM. Bring folding chairs + drinks. Pay-what-you-can via Venmo. Entrance on Broome St. between Willet and Columbia (south side of the Williamsburg Bridge). Near F, M, J, Z trains.',
+    links: [{ label: 'RSVP', url: 'https://partiful.com/e/MAHnDC0ph1WM6T3Op7MN' }],
     credit: 'SS',
   },
   {
@@ -194,16 +174,6 @@ window.EVENTS = [
     credit: 'CR',
   },
   {
-    sortDate: '2026-07-18', dateDisplay: 'Jul 18 · 8:00 PM ET',
-    urgency: 'upcoming', section: 'events', sectionLabel: 'Event',
-    title: 'Cinepoesia — Issue 4 Release Reading',
-    location: 'New York', city: 'New York',
-    venue: 'Cinepoesia',
-    desc: 'Poetry-about-film and film-about-poetry journal launches Issue 4 with screenings and readings from six contributors. Free.',
-    links: [{ label: 'Details', url: '#' }],
-    credit: 'ARB',
-  },
-  {
     sortDate: '2026-07-25', dateDisplay: 'Jul 25 · 11:59 PM ET',
     urgency: 'upcoming', section: 'deadlines', sectionLabel: 'Deadline',
     title: 'MacDowell Residency · Winter/Spring 2027',
@@ -244,16 +214,6 @@ window.EVENTS = [
     desc: 'Quarterly roundtable. This edition: "Working with non-actors." Open to anyone making work. Free, RSVP required.',
     links: [{ label: 'RSVP', url: 'https://fivemyles.org/calendar' }],
     credit: 'SG',
-  },
-  {
-    sortDate: '2026-08-20', dateDisplay: 'Aug 20 · 8:30 PM ET',
-    urgency: 'upcoming', section: 'screenings', sectionLabel: 'Screening',
-    title: 'Pier 7 Outdoor: "Killer of Sheep"',
-    location: 'New York', city: 'New York',
-    venue: 'Pier 7',
-    desc: 'Charles Burnett, 1978. Outdoor projection on the pier wall. Free. Bring a blanket.',
-    links: [{ label: 'Details', url: '#' }],
-    credit: 'DS',
   },
   {
     sortDate: '2026-08-28', dateDisplay: 'Aug 28 — Oct 15',
