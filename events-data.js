@@ -22,7 +22,7 @@ window.EVENTS = [
     location: 'New York', city: 'New York',
     venue: 'Anthology Film Archives',
     desc: 'New 4K restoration. Part of Anthology\'s month-long Akerman retrospective. Introduced by Ami Vora.',
-    links: [{ label: 'Tickets', url: '#' }],
+    links: [{ label: 'Tickets', url: 'https://anthologyfilmarchives.org/film_screenings/series' }],
     credit: 'AV',
   },
   {
@@ -32,7 +32,7 @@ window.EVENTS = [
     location: 'New York', city: 'New York',
     venue: 'Powerhouse Arts',
     desc: 'Monthly community meeting. This month: distribution after the festival, with panelists from Cinema Guild and Grasshopper.',
-    links: [{ label: 'Free RSVP', url: '#' }],
+    links: [{ label: 'Free RSVP', url: 'https://powerhousearts.org/calendar' }],
     credit: 'CR',
   },
   {
@@ -42,7 +42,7 @@ window.EVENTS = [
     location: 'Online', city: 'Online',
     venue: 'Slamdance',
     desc: 'Final deadline for the Unstoppable program (filmmakers with disabilities). No fee for first-time submitters.',
-    links: [{ label: 'Submit', url: '#' }, { label: 'Guidelines', url: '#' }],
+    links: [{ label: 'Submit', url: 'https://slamdance.com/festival-submit/' }, { label: 'Guidelines', url: 'https://slamdance.com/festival-faq/' }],
     credit: 'DS',
   },
   {
@@ -52,7 +52,7 @@ window.EVENTS = [
     location: 'New York', city: 'New York',
     venue: 'Spectacle Theater',
     desc: '"Adieu Philippine" (1962) and "Du côté d\'Orouët" (1973). Double bill, $10. Volunteer-run, cash only.',
-    links: [{ label: 'Calendar', url: '#' }],
+    links: [{ label: 'Calendar', url: 'https://spectacletheater.com' }],
     credit: 'SG',
   },
 
@@ -64,7 +64,7 @@ window.EVENTS = [
     location: 'New York', city: 'New York',
     venue: 'Light Industry',
     desc: 'Selected and introduced by Ed Halter. New work alongside selections from the LI archive. $8 suggested.',
-    links: [{ label: 'Tickets', url: '#' }],
+    links: [{ label: 'Tickets', url: 'https://lightindustry.org/calendar/' }],
     credit: 'TH',
   },
   {
@@ -74,7 +74,7 @@ window.EVENTS = [
     location: 'New York', city: 'New York',
     venue: 'NYC City Council',
     desc: 'Public hearing on Intro 1217 (live/work housing protections for artists in industrial zones). Sign up to testify, or attend in solidarity.',
-    links: [{ label: 'How to testify', url: '#' }, { label: 'Bill text', url: '#' }],
+    links: [{ label: 'How to testify', url: 'https://council.nyc.gov/legislation/' }, { label: 'Bill text', url: 'https://intro.nyc/recent' }],
     credit: 'ARB',
   },
   {
@@ -94,7 +94,7 @@ window.EVENTS = [
     location: 'New York', city: 'New York',
     venue: 'IFC Center',
     desc: 'Three short docs from London\'s Open City Doc Fest, with directors in attendance. Reception after.',
-    links: [{ label: 'Tickets', url: '#' }],
+    links: [{ label: 'Tickets', url: 'https://ifccenter.com' }],
     credit: 'AS',
   },
 
@@ -116,7 +116,7 @@ window.EVENTS = [
     location: 'New York', city: 'New York',
     venue: 'Maysles Documentary Center',
     desc: 'Four-hour intensive on observational doc editing with editor Anne Alvergue. $45 / $25 students. Cap: 12.',
-    links: [{ label: 'Register', url: '#' }],
+    links: [{ label: 'Register', url: 'https://www.maysles.org/calendar' }],
     credit: 'DS',
   },
   {
@@ -126,7 +126,7 @@ window.EVENTS = [
     location: 'Online', city: 'Online',
     venue: 'Sundance Institute',
     desc: 'Earlybird fee tier for features and shorts. Regular deadline Aug 5, late Sep 10.',
-    links: [{ label: 'Submit', url: '#' }, { label: 'Fee waivers', url: '#' }],
+    links: [{ label: 'Submit', url: 'https://www.sundance.org/festivals/sundance-film-festival/submit/' }, { label: 'Fee waivers', url: 'https://www.sundance.org/festivals/sundance-film-festival/submit/' }],
     credit: 'CR',
   },
 
@@ -138,27 +138,27 @@ window.EVENTS = [
     location: 'New York', city: 'New York',
     venue: 'Metrograph',
     desc: 'Opening night of a two-week series. 35mm prints. Lizzie Borden in person.',
-    links: [{ label: 'Series page', url: '#' }, { label: 'Tickets', url: '#' }],
+    links: [{ label: 'Series page', url: 'https://metrograph.com' }, { label: 'Tickets', url: 'https://metrograph.com' }],
     credit: 'AV',
   },
   {
     sortDate: '2026-06-22', dateDisplay: 'Jun 22 · 11:59 PM PT',
     urgency: 'upcoming', section: 'deadlines', sectionLabel: 'Deadline',
-    title: 'NYFF63 · Currents & Shorts Submissions',
+    title: 'NYFF64 · Currents & Shorts Submissions',
     location: 'Online', city: 'Online',
     venue: 'Film at Lincoln Center',
     desc: 'Late deadline for short films and the Currents experimental section. Earlier deadlines have passed.',
-    links: [{ label: 'Submit', url: '#' }],
+    links: [{ label: 'Submit', url: 'https://filmfreeway.com/NYFF' }],
     credit: 'TH',
   },
   {
     sortDate: '2026-06-24', dateDisplay: 'Jun 24 · 9:30 PM PT',
     urgency: 'upcoming', section: 'screenings', sectionLabel: 'Screening',
     title: 'Roxie Mission · Lynne Sachs Program',
-    location: 'Los Angeles', city: 'Los Angeles',
+    location: 'San Francisco', city: 'Elsewhere',
     venue: 'Roxie Theater',
     desc: 'Three Sachs shorts plus "Film About a Father Who" (2020). Director in attendance.',
-    links: [{ label: 'Tickets', url: '#' }],
+    links: [{ label: 'Tickets', url: 'https://roxie.com/calendar/' }],
     credit: 'SG',
   },
 
@@ -170,7 +170,7 @@ window.EVENTS = [
     location: 'New York', city: 'New York',
     venue: 'Rooftop Films',
     desc: 'Two months of outdoor screenings on rooftops across the five boroughs. Lineup drops weekly. Single tickets $20, season passes $200.',
-    links: [{ label: 'Calendar', url: '#' }, { label: 'Season pass', url: '#' }],
+    links: [{ label: 'Calendar', url: 'https://rooftopfilms.com/calendar/' }, { label: 'Season pass', url: 'https://rooftopfilms.com/support/' }],
     credit: 'AS',
   },
   {
@@ -180,7 +180,7 @@ window.EVENTS = [
     location: 'New York', city: 'New York',
     venue: 'IFC Center',
     desc: 'Julie Dash\'s landmark on a new 4K restoration. Introduced by Danielle A. Scruggs.',
-    links: [{ label: 'Tickets', url: '#' }],
+    links: [{ label: 'Tickets', url: 'https://ifccenter.com' }],
     credit: 'DS',
   },
   {
@@ -190,7 +190,7 @@ window.EVENTS = [
     location: 'New York', city: 'New York',
     venue: 'Reanimation Library',
     desc: 'Drop-in research residency: use the collection of cast-off illustrated books for your project. No application. Open Wed/Sat, 1–6 PM.',
-    links: [{ label: 'Hours & catalog', url: '#' }],
+    links: [{ label: 'Hours & catalog', url: 'https://www.reanimationlibrary.org/' }],
     credit: 'CR',
   },
   {
@@ -210,7 +210,7 @@ window.EVENTS = [
     location: 'Online', city: 'Online',
     venue: 'MacDowell',
     desc: 'Filmmakers, screenwriters, video and interdisciplinary artists. 2–8 week residencies with all expenses covered.',
-    links: [{ label: 'Apply', url: '#' }, { label: 'About', url: '#' }],
+    links: [{ label: 'Apply', url: 'https://www.macdowell.org/apply/apply-for-fellowship' }, { label: 'About', url: 'https://www.macdowell.org/apply/application-guidelines' }],
     credit: 'AV',
   },
   {
@@ -220,7 +220,7 @@ window.EVENTS = [
     location: 'New York', city: 'New York',
     venue: 'BAM',
     desc: 'Four nights, four films. Opens with "Faces" (1968). 35mm throughout. Series ticket available.',
-    links: [{ label: 'Series', url: '#' }, { label: 'Tickets', url: '#' }],
+    links: [{ label: 'Series', url: 'https://bam.org/film' }, { label: 'Tickets', url: 'https://bam.org/film' }],
     credit: 'TH',
   },
 
@@ -232,7 +232,7 @@ window.EVENTS = [
     location: 'Online', city: 'Online',
     venue: 'Sundance Institute',
     desc: 'Regular fee tier closes. After this, only late deadline (Sep 10) remains.',
-    links: [{ label: 'Submit', url: '#' }],
+    links: [{ label: 'Submit', url: 'https://www.sundance.org/festivals/sundance-film-festival/submit/' }],
     credit: 'CR',
   },
   {
@@ -242,7 +242,7 @@ window.EVENTS = [
     location: 'New York', city: 'New York',
     venue: 'FiveMyles Gallery',
     desc: 'Quarterly roundtable. This edition: "Working with non-actors." Open to anyone making work. Free, RSVP required.',
-    links: [{ label: 'RSVP', url: '#' }],
+    links: [{ label: 'RSVP', url: 'https://fivemyles.org/calendar' }],
     credit: 'SG',
   },
   {
@@ -258,11 +258,11 @@ window.EVENTS = [
   {
     sortDate: '2026-08-28', dateDisplay: 'Aug 28 — Oct 15',
     urgency: 'ongoing', section: 'events', sectionLabel: 'Event',
-    title: 'MoMA · To Save and Project (24th Edition)',
+    title: 'MoMA · To Save and Project',
     location: 'New York', city: 'New York',
     venue: 'Museum of Modern Art',
-    desc: 'MoMA\'s annual international festival of film preservation. Six weeks of restorations, many North American premieres.',
-    links: [{ label: 'Full lineup', url: '#' }],
+    desc: 'MoMA\'s annual international festival of film preservation. Restorations, many North American premieres.',
+    links: [{ label: 'Full lineup', url: 'https://www.moma.org/calendar/groups/34' }],
     credit: 'AS',
   },
 
@@ -345,7 +345,7 @@ window.EVENTS = [
     location: 'New York', city: 'New York',
     venue: 'Mono No Aware',
     desc: 'Annual showcase of films made by members. 24 shorts, hand-developed and projected on 16mm.',
-    links: [{ label: 'Recap', url: '#' }],
+    links: [{ label: 'Recap', url: 'https://mononoawarefilm.com' }],
     credit: 'SG',
   },
   {
@@ -355,7 +355,7 @@ window.EVENTS = [
     location: 'Online', city: 'Online',
     venue: 'NEA',
     desc: 'Submission window closed. Next cycle opens December 2026.',
-    links: [{ label: 'Next cycle', url: '#' }],
+    links: [{ label: 'Next cycle', url: 'https://www.arts.gov/grants/grants-for-arts-projects/media-arts' }],
     credit: 'ARB',
   },
 ];
