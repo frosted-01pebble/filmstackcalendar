@@ -43,6 +43,16 @@ const SB_FONTS = {
   mono: 'ui-monospace, "SF Mono", "JetBrains Mono", monospace'
 };
 
+// Render text with *italic* markers → <em> elements for film titles.
+function renderText(str) {
+  if (!str || typeof str !== 'string' || !str.includes('*')) return str;
+  return str.split(/(\*[^*]+\*)/).map((part, i) =>
+    part.startsWith('*') && part.endsWith('*') && part.length > 2
+      ? React.createElement('em', { key: i }, part.slice(1, -1))
+      : part
+  );
+}
+
 // Subscribe to the admin store so any submission / auth change re-renders.
 function useStore() {
   const [tick, setTick] = React.useState(0);
@@ -97,7 +107,7 @@ function FilmStackCalendarApp() {
   slice().sort((a, b) => a.sortDate.localeCompare(b.sortDate));
 
   const thisWeek = events.filter((e) => {
-    if (e.urgency === 'past') return false;
+    if (window.CalUtils.effectiveUrgency(e) === 'past') return false;
     const d = window.CalUtils.daysUntil(e);
     return d >= 0 && d <= 7;
   }).slice().sort((a, b) => a.sortDate.localeCompare(b.sortDate));
@@ -108,7 +118,7 @@ function FilmStackCalendarApp() {
   });
 
   const counts = events.reduce((acc, e) => {
-    if (!showPast && e.urgency === 'past') return acc;
+    if (!showPast && window.CalUtils.effectiveUrgency(e) === 'past') return acc;
     acc.all = (acc.all || 0) + 1;
     acc[e.section] = (acc[e.section] || 0) + 1;
     return acc;
@@ -446,7 +456,7 @@ function SB_BellPopover({ events, onClose }) {
                 <div style={{
                   fontFamily: SB_FONTS.brand, fontSize: 13, fontWeight: 600,
                   color: SB_COLORS.ink, lineHeight: 1.3, letterSpacing: -0.1,
-                }}>{e.title}</div>
+                }}>{renderText(e.title)}</div>
                 <div style={{
                   fontFamily: SB_FONTS.brand, fontSize: 12, color: SB_COLORS.mute, marginTop: 2,
                 }}>{e.location}</div>
@@ -644,7 +654,7 @@ function SB_ThisWeek({ events }) {
                   lineHeight: 1.25, color: SB_COLORS.ink, letterSpacing: -0.2,
                   display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
                   overflow: 'hidden'
-                }}>{e.title}</div>
+                }}>{renderText(e.title)}</div>
                 <div style={{
                   fontFamily: SB_FONTS.brand, fontSize: 12.5, color: SB_COLORS.mute,
                   marginTop: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
@@ -976,8 +986,9 @@ function SB_EventCard({ event: e, open, onToggle, user }) {
   const mon = d.toLocaleString('en-US', { month: 'short' });
   const day = d.getDate();
   const dow = d.toLocaleString('en-US', { weekday: 'short' });
-  const time = e.dateDisplay.includes('·') ? e.dateDisplay.split('·')[1].trim() : e.urgency === 'rolling' || e.urgency === 'ongoing' ? e.dateDisplay : '';
-  const isRolling = e.urgency === 'rolling' || e.urgency === 'ongoing';
+  const eff = window.CalUtils.effectiveUrgency(e);
+  const isRolling = eff === 'rolling' || eff === 'ongoing';
+  const time = e.dateDisplay.includes('·') ? e.dateDisplay.split('·')[1].trim() : isRolling ? e.dateDisplay : '';
   const isPending = e.status === 'pending';
   const [hover, setHover] = React.useState(false);
   const [calMenuOpen, setCalMenuOpen] = React.useState(false);
@@ -1013,7 +1024,7 @@ function SB_EventCard({ event: e, open, onToggle, user }) {
           <div style={{
             fontFamily: SB_FONTS.brand, fontSize: 13, color: SB_COLORS.ink,
             lineHeight: 1.2, padding: '14px 0', fontWeight: 700, letterSpacing: -0.1
-          }}>{e.urgency === 'rolling' ? 'Rolling' : 'Ongoing'}</div> :
+          }}>{eff === 'rolling' ? 'Rolling' : 'Ongoing'}</div> :
 
           <>
               <div style={{
@@ -1038,12 +1049,12 @@ function SB_EventCard({ event: e, open, onToggle, user }) {
               fontFamily: SB_FONTS.brand, fontSize: 11, fontWeight: 600, letterSpacing: 0.04,
               color: color, background: tint, padding: '2px 8px', borderRadius: 999
             }}>{e.sectionLabel}</span>
-            {e.urgency === 'today' &&
+            {eff === 'today' &&
             <span style={{
               fontFamily: SB_FONTS.brand, fontSize: 11, fontWeight: 700,
               color: SB_COLORS.paper, background: SB_COLORS.ink,
               padding: '2px 8px', borderRadius: 999, letterSpacing: 0.04
-            }}>Tonight</span>
+            }}>Today</span>
             }
             {isPending &&
             <span style={{
@@ -1062,7 +1073,7 @@ function SB_EventCard({ event: e, open, onToggle, user }) {
             fontFamily: SB_FONTS.brand, fontSize: 18.5, fontWeight: 700,
             lineHeight: 1.25, color: SB_COLORS.ink, letterSpacing: -0.3,
             marginBottom: 6, textWrap: 'pretty'
-          }}>{e.title}</div>
+          }}>{renderText(e.title)}</div>
           <div style={{
             display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap',
             fontFamily: SB_FONTS.brand, fontSize: 13.5, color: SB_COLORS.inkSoft
@@ -1087,7 +1098,7 @@ function SB_EventCard({ event: e, open, onToggle, user }) {
             <div style={{
             fontFamily: SB_FONTS.brand, fontSize: 14.5, lineHeight: 1.55,
             color: SB_COLORS.inkSoft, textWrap: 'pretty'
-          }}>{e.desc}</div>
+          }}>{renderText(e.desc)}</div>
             <div style={{ display: 'flex', gap: 8, marginTop: 16, flexWrap: 'wrap' }}>
               {(e.links || []).map((l, i) =>
                 <a key={i} href={l.url} target="_blank" rel="noreferrer"
@@ -1292,7 +1303,7 @@ function SB_CalendarView({ events, monthOffset, setMonthOffset }) {
                       }} />
                       <span style={{
                         overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1,
-                      }}>{e.title}</span>
+                      }}>{renderText(e.title)}</span>
                     </div>
                   )}
                   {c.dayEvents.length > 4 &&
@@ -1385,7 +1396,7 @@ function SB_MapView({ events }) {
                   <div style={{
                   fontFamily: SB_FONTS.brand, fontSize: 14.5, fontWeight: 700,
                   color: SB_COLORS.ink, lineHeight: 1.25, marginBottom: 4, letterSpacing: -0.2
-                }}>{e.title}</div>
+                }}>{renderText(e.title)}</div>
                   <div style={{ fontFamily: SB_FONTS.brand, fontSize: 12.5, color: SB_COLORS.mute }}>{e.dateDisplay}</div>
                 </div>
               }
