@@ -1191,7 +1191,7 @@ function SB_CalendarView({ events, monthOffset, setMonthOffset }) {
   }
   while (cells.length % 7 !== 0) cells.push({ blank: true });
 
-  const sharedGrid = { display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)' };
+  const sharedGrid = { display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))' };
 
   return (
     <div style={{ width: '100%' }}>
@@ -1234,6 +1234,7 @@ function SB_CalendarView({ events, monthOffset, setMonthOffset }) {
         {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d, i) =>
           <div key={d} style={{
             padding: '10px 12px',
+            minWidth: 0, overflow: 'hidden',
             fontFamily: SB_FONTS.brand, fontSize: 12, fontWeight: 600,
             color: SB_COLORS.mute, textTransform: 'uppercase', letterSpacing: 0.06,
             background: SB_COLORS.paperAlt,
@@ -1251,6 +1252,7 @@ function SB_CalendarView({ events, monthOffset, setMonthOffset }) {
           return (
             <div key={i} style={{
               minHeight: 130,
+              minWidth: 0, overflow: 'hidden',
               padding: '10px 12px',
               boxSizing: 'border-box',
               borderRight: col !== 6 ? `1px solid ${SB_COLORS.rule}` : 'none',
