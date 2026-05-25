@@ -48,7 +48,7 @@ function renderText(str) {
   if (!str || typeof str !== 'string' || !str.includes('*')) return str;
   return str.split(/(\*[^*]+\*)/).map((part, i) =>
     part.startsWith('*') && part.endsWith('*') && part.length > 2
-      ? React.createElement('em', { key: i }, part.slice(1, -1))
+      ? React.createElement('em', { key: i, style: { fontStyle: 'italic' } }, part.slice(1, -1))
       : part
   );
 }
@@ -86,7 +86,7 @@ function FilmStackCalendarApp() {
   const [showPast, setShowPast] = React.useState(false);
   const [view, setView] = React.useState('list');
   const [query, setQuery] = React.useState('');
-  const [cities, setCities] = React.useState(() => new Set(['New York', 'Los Angeles', 'Elsewhere', 'Online']));
+  const [cities, setCities] = React.useState(() => new Set(['New York', 'Los Angeles', 'London', 'Elsewhere', 'Online']));
   const [expanded, setExpanded] = React.useState(new Set());
   const [filterStuck, setFilterStuck] = React.useState(false);
   const [monthOffset, setMonthOffset] = React.useState(0);
@@ -695,6 +695,7 @@ function SB_FilterBar({ section, setSection, showPast, setShowPast, cities, setC
   const cityOpts = [
     { value: 'New York',    label: 'NYC' },
     { value: 'Los Angeles', label: 'LA' },
+    { value: 'London',      label: 'LDN' },
     { value: 'Elsewhere',   label: 'World' },
     { value: 'Online',      label: 'Online' },
   ];
