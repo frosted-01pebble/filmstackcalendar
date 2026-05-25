@@ -11,26 +11,34 @@
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --bg:       #0d0d0c;
-            --surface:  #161412;
-            --surface2: #1e1b19;
-            --border:   #2a2826;
-            --text:     #e5e0d8;
-            --text2:    #9c9690;
-            --text3:    #4a4845;
-            --accent:   #d4714a;
+            --bg:       #ffffff;
+            --surface:  #fafaf9;
+            --surface2: #f2f0ec;
+            --border:   #e8e4de;
+            --text:     #1a1917;
+            --text2:    #6b6560;
+            --text3:    #b0a9a2;
+            --accent:   #ff5500;
 
-            --c-screenings: #60a5fa;
-            --c-events:     #4ade80;
-            --c-deadlines:  #f87171;
-            --c-actions:    #c084fc;
+            /* Section card backgrounds */
+            --bg-screenings: #eff6ff;
+            --bg-events:     #f0fdf4;
+            --bg-deadlines:  #fff7ed;
+            --bg-actions:    #faf5ff;
 
-            --u-today:    #ef4444;
-            --u-soon:     #f97316;
-            --u-ongoing:  #34d399;
-            --u-rolling:  #34d399;
+            /* Section tag colors */
+            --c-screenings: #2563eb;
+            --c-events:     #16a34a;
+            --c-deadlines:  #ea580c;
+            --c-actions:    #9333ea;
+
+            /* Urgency badge colors */
+            --u-today:    #dc2626;
+            --u-soon:     #ea580c;
+            --u-ongoing:  #16a34a;
+            --u-rolling:  #16a34a;
             --u-upcoming: #9c9690;
-            --u-past:     #3a3835;
+            --u-past:     #ccc8c2;
         }
 
         html { scroll-behavior: smooth; }
@@ -44,51 +52,52 @@
             min-height: 100vh;
         }
 
-        /* ── Top bar ── */
-        .topbar {
+        /* ── Substack-style nav ── */
+        /* UPDATE: replace Substack URLs below with your actual section links */
+        .fs-nav {
             position: sticky;
             top: 0;
             z-index: 100;
-            background: #0d0d0c;
+            background: #fff;
             border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .fs-nav::-webkit-scrollbar { display: none; }
+        .fs-nav-inner {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 0 2rem;
-            height: 52px;
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            white-space: nowrap;
         }
-        .topbar-pub {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--text);
-            letter-spacing: -0.01em;
-        }
-        .topbar-date {
-            font-size: 0.65rem;
-            font-weight: 500;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--text3);
-        }
-        .topbar-sub {
-            font-size: 0.72rem;
-            font-weight: 500;
+        .fs-nav-link {
+            display: block;
+            padding: 0.8rem 0.85rem;
+            font-size: 0.83rem;
+            font-weight: 400;
             color: var(--text2);
             text-decoration: none;
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 0.3rem 0.9rem;
-            transition: color 0.15s, border-color 0.15s;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            transition: color 0.15s;
+            white-space: nowrap;
         }
-        .topbar-sub:hover { color: var(--text); border-color: var(--text3); }
+        .fs-nav-link:hover { color: var(--text); }
+        .fs-nav-link.active {
+            color: var(--text);
+            font-weight: 600;
+            border-bottom-color: var(--text);
+        }
 
         /* ── Hero ── */
         .hero {
-            max-width: 720px;
+            max-width: 680px;
             margin: 0 auto;
-            padding: 3.5rem 1.5rem 2.5rem;
+            padding: 3.25rem 1.5rem 2.25rem;
             text-align: center;
+            border-bottom: 1px solid var(--border);
         }
         .hero-eyebrow {
             font-size: 0.62rem;
@@ -96,33 +105,34 @@
             letter-spacing: 0.2em;
             text-transform: uppercase;
             color: var(--text3);
-            margin-bottom: 1rem;
+            margin-bottom: 0.9rem;
         }
         .hero-title {
             font-family: 'Playfair Display', serif;
-            font-size: clamp(2.4rem, 5.5vw, 3.6rem);
+            font-size: clamp(2.2rem, 5vw, 3.4rem);
             font-weight: 700;
             color: var(--text);
             line-height: 1.05;
             letter-spacing: -0.02em;
-            margin-bottom: 1rem;
+            margin-bottom: 0.9rem;
         }
-        .hero-rule { width: 32px; height: 2px; background: var(--accent); margin: 0 auto 1rem; }
+        .hero-rule { width: 32px; height: 2px; background: var(--accent); margin: 0 auto 0.9rem; }
         .hero-desc {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: var(--text2);
             line-height: 1.7;
-            max-width: 480px;
-            margin: 0 auto 1.75rem;
+            max-width: 500px;
+            margin: 0 auto 1.5rem;
+            font-style: italic;
         }
         .hero-cta {
             display: inline-block;
             background: var(--accent);
             color: #fff;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             font-weight: 600;
             letter-spacing: 0.04em;
-            padding: 0.6rem 1.6rem;
+            padding: 0.55rem 1.4rem;
             border-radius: 24px;
             text-decoration: none;
             transition: opacity 0.15s;
@@ -133,17 +143,18 @@
         .filters {
             max-width: 960px;
             margin: 0 auto;
-            padding: 0 1.5rem 1.5rem;
+            padding: 1.25rem 1.5rem 1.25rem;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.45rem;
             flex-wrap: wrap;
+            border-bottom: 1px solid var(--border);
         }
         .filter-btn {
             font-size: 0.7rem;
             font-weight: 500;
-            letter-spacing: 0.05em;
-            padding: 0.3rem 0.9rem;
+            letter-spacing: 0.04em;
+            padding: 0.28rem 0.85rem;
             border-radius: 20px;
             border: 1px solid var(--border);
             background: transparent;
@@ -151,41 +162,44 @@
             cursor: pointer;
             transition: all 0.15s;
         }
-        .filter-btn:hover { color: var(--text); border-color: var(--text3); }
-        .filter-btn.active { background: var(--surface2); color: var(--text); border-color: var(--text3); }
+        .filter-btn:hover { color: var(--text); border-color: var(--text3); background: var(--surface); }
+        .filter-btn.active { color: var(--text); border-color: var(--text3); background: var(--surface2); }
 
-        .filter-btn[data-section="all"].active    { border-color: var(--text2); }
-        .filter-btn[data-section="screenings"].active { border-color: var(--c-screenings); color: var(--c-screenings); }
-        .filter-btn[data-section="events"].active     { border-color: var(--c-events); color: var(--c-events); }
-        .filter-btn[data-section="deadlines"].active  { border-color: var(--c-deadlines); color: var(--c-deadlines); }
-        .filter-btn[data-section="actions"].active    { border-color: var(--c-actions); color: var(--c-actions); }
+        .filter-btn[data-section="screenings"].active { border-color: var(--c-screenings); color: var(--c-screenings); background: var(--bg-screenings); }
+        .filter-btn[data-section="events"].active     { border-color: var(--c-events);     color: var(--c-events);     background: var(--bg-events); }
+        .filter-btn[data-section="deadlines"].active  { border-color: var(--c-deadlines);  color: var(--c-deadlines);  background: var(--bg-deadlines); }
+        .filter-btn[data-section="actions"].active    { border-color: var(--c-actions);    color: var(--c-actions);    background: var(--bg-actions); }
 
-        .filter-sep { width: 1px; height: 18px; background: var(--border); }
-
+        .filter-sep { width: 1px; height: 18px; background: var(--border); margin: 0 0.1rem; }
         .filter-btn.past-toggle { font-style: italic; }
 
         /* ── Card grid ── */
         .grid {
             max-width: 960px;
             margin: 0 auto;
-            padding: 0 1.5rem 4rem;
+            padding: 0 0 4rem;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 1px;
             background: var(--border);
         }
 
-        /* ── Card ── */
+        /* ── Card base ── */
         .card {
-            background: var(--bg);
-            padding: 1.5rem;
+            padding: 1.4rem 1.5rem;
             display: flex;
             flex-direction: column;
-            gap: 0.6rem;
-            transition: background 0.15s;
+            gap: 0.55rem;
+            transition: filter 0.15s;
         }
-        .card:hover { background: var(--surface); }
-        .card.past { opacity: 0.45; }
+        .card:hover { filter: brightness(0.97); }
+        .card.past { opacity: 0.4; }
+
+        /* ── Card section colors ── */
+        .card-screenings { background: var(--bg-screenings); }
+        .card-events     { background: var(--bg-events); }
+        .card-deadlines  { background: var(--bg-deadlines); }
+        .card-actions    { background: var(--bg-actions); }
 
         .card-top {
             display: flex;
@@ -194,22 +208,23 @@
             gap: 0.5rem;
         }
         .section-tag {
-            font-size: 0.6rem;
-            font-weight: 600;
+            font-size: 0.58rem;
+            font-weight: 700;
             letter-spacing: 0.1em;
             text-transform: uppercase;
             padding: 0.15rem 0.5rem;
             border-radius: 3px;
+            border: 1px solid currentColor;
         }
-        .tag-screenings { color: var(--c-screenings); background: rgba(96,165,250,0.1); }
-        .tag-events     { color: var(--c-events);     background: rgba(74,222,128,0.1); }
-        .tag-deadlines  { color: var(--c-deadlines);  background: rgba(248,113,113,0.1); }
-        .tag-actions    { color: var(--c-actions);    background: rgba(192,132,252,0.1); }
+        .tag-screenings { color: var(--c-screenings); }
+        .tag-events     { color: var(--c-events); }
+        .tag-deadlines  { color: var(--c-deadlines); }
+        .tag-actions    { color: var(--c-actions); }
 
         .date-badge {
-            font-size: 0.65rem;
+            font-size: 0.64rem;
             font-weight: 600;
-            letter-spacing: 0.04em;
+            letter-spacing: 0.03em;
             text-transform: uppercase;
         }
         .date-today    { color: var(--u-today); }
@@ -221,18 +236,17 @@
 
         .card-title {
             font-family: 'Playfair Display', serif;
-            font-size: 1.05rem;
+            font-size: 1.02rem;
             font-weight: 700;
             color: var(--text);
             line-height: 1.3;
         }
         .card-loc {
-            font-size: 0.72rem;
+            font-size: 0.71rem;
             color: var(--text3);
-            font-weight: 400;
         }
         .card-desc {
-            font-size: 0.85rem;
+            font-size: 0.84rem;
             color: var(--text2);
             line-height: 1.6;
             flex: 1;
@@ -243,8 +257,8 @@
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 0.4rem;
-            padding-top: 0.4rem;
-            border-top: 1px solid var(--border);
+            padding-top: 0.5rem;
+            border-top: 1px solid rgba(0,0,0,0.08);
             margin-top: auto;
         }
         .card-links { display: flex; flex-wrap: wrap; gap: 0.5rem; }
@@ -257,7 +271,7 @@
             padding-bottom: 1px;
             transition: color 0.15s, border-color 0.15s;
         }
-        .card-link:hover { color: var(--text); border-color: var(--text2); }
+        .card-link:hover { color: var(--accent); border-color: var(--accent); }
         .card-credit {
             font-size: 0.6rem;
             font-weight: 600;
@@ -272,6 +286,7 @@
             padding: 4rem 1.5rem;
             color: var(--text3);
             font-size: 0.9rem;
+            background: var(--bg);
         }
 
         /* ── Footer ── */
@@ -279,19 +294,20 @@
             border-top: 1px solid var(--border);
             padding: 2rem 1.5rem;
             text-align: center;
+            background: var(--surface);
         }
         .footer-pub {
             font-family: 'Playfair Display', serif;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 700;
             color: var(--text3);
-            margin-bottom: 0.6rem;
+            margin-bottom: 0.75rem;
         }
         .footer-credits {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 0.5rem;
+            gap: 0.4rem;
             margin-bottom: 1rem;
         }
         .footer-credit-chip {
@@ -301,42 +317,50 @@
             border: 1px solid var(--border);
             border-radius: 20px;
             padding: 0.15rem 0.6rem;
+            background: var(--bg);
         }
         .footer-contact {
             font-size: 0.7rem;
             color: var(--text3);
             line-height: 2;
         }
-        .footer-contact a { color: var(--text3); text-decoration: none; border-bottom: 1px solid var(--border); }
-        .footer-contact a:hover { color: var(--text2); }
+        .footer-contact a { color: var(--text2); text-decoration: none; border-bottom: 1px solid var(--border); }
+        .footer-contact a:hover { color: var(--accent); border-color: var(--accent); }
 
         /* ── Mobile ── */
         @media (max-width: 680px) {
-            .topbar { padding: 0 1rem; }
-            .topbar-date { display: none; }
-            .hero { padding: 2.5rem 1rem 2rem; }
-            .filters { padding: 0 1rem 1.25rem; }
+            .hero { padding: 2.25rem 1rem 2rem; }
+            .filters { padding: 1rem; }
             .grid { grid-template-columns: 1fr; padding: 0 0 3rem; }
-            .card { padding: 1.25rem 1rem; }
+            .card { padding: 1.2rem 1rem; }
         }
     </style>
 </head>
 <body>
 
-<!-- ── TOP BAR ── -->
-<header class="topbar">
-    <span class="topbar-pub">FilmStack Calendar</span>
-    <!-- UPDATE: change date each week -->
-    <span class="topbar-date">Week of May 19, 2026</span>
-    <a class="topbar-sub" href="mailto:filmstackcalendar@gmail.com">Subscribe</a>
-</header>
+<!-- ── SUBSTACK-STYLE NAV ── -->
+<!-- UPDATE: replace URLs with your actual FSDD Substack section links -->
+<nav class="fs-nav">
+    <div class="fs-nav-inner">
+        <a class="fs-nav-link" href="https://filmstackdailydigest.substack.com">Home</a>
+        <a class="fs-nav-link" href="https://filmstackdailydigest.substack.com/s/filmstack-1-1">FilmStack 1:1</a>
+        <span class="fs-nav-link active">FilmStack Calendar</span>
+        <a class="fs-nav-link" href="https://filmstackdailydigest.substack.com/s/nonstack-round-up">NonStack Round Up</a>
+        <a class="fs-nav-link" href="https://filmstackdailydigest.substack.com/s/challenges">Challenges</a>
+        <a class="fs-nav-link" href="https://filmstackdailydigest.substack.com/s/nonde50">NonD&#x113;50</a>
+        <a class="fs-nav-link" href="https://filmstackdailydigest.substack.com/s/resources">Resources</a>
+        <a class="fs-nav-link" href="https://filmstackdailydigest.substack.com/archive">Archive</a>
+        <a class="fs-nav-link" href="https://filmstackdailydigest.substack.com/s/leaderboard">Leaderboard</a>
+        <a class="fs-nav-link" href="https://filmstackdailydigest.substack.com/about">About</a>
+    </div>
+</nav>
 
 <!-- ── HERO ── -->
 <div class="hero">
     <p class="hero-eyebrow">FilmStack Daily Digest</p>
     <h1 class="hero-title">FilmStack Calendar</h1>
     <div class="hero-rule"></div>
-    <p class="hero-desc">Screenings, events, deadlines &amp; actions for the film community — curated weekly by the FSDD team.</p>
+    <p class="hero-desc">All of what's happening that might be of interest to cinema-makers, cinema lovers, and the cinema curious...</p>
     <a class="hero-cta" href="mailto:filmstackdailydigest@gmail.com">Subscribe to FSDD</a>
 </div>
 
@@ -815,7 +839,7 @@ function makeCard(ev) {
     ).join('');
 
     return `
-    <article class="card${isPast ? ' past' : ''}" data-section="${ev.section}" data-urgency="${ev.urgency}">
+    <article class="card card-${ev.section}${isPast ? ' past' : ''}" data-section="${ev.section}" data-urgency="${ev.urgency}">
         <div class="card-top">
             <span class="section-tag ${sectionTagClass(ev.section)}">${ev.sectionLabel}</span>
             <span class="date-badge date-${ev.urgency}">${ev.dateDisplay}</span>
