@@ -266,6 +266,77 @@ window.EVENTS = [
     credit: 'AS',
   },
 
+  // ─── May 25–27 additions (Calendar Update #31) ───────────────────
+  {
+    sortDate: '2026-05-25', dateDisplay: 'May 25',
+    urgency: 'today', section: 'screenings', sectionLabel: 'Screening',
+    title: 'Invisible Nation — St Antony\'s College Oxford',
+    location: 'Oxford, UK', city: 'Elsewhere',
+    venue: 'St Antony\'s College, University of Oxford',
+    desc: 'Screening of Invisible Nation at St Antony\'s College, University of Oxford.',
+    links: [],
+    credit: 'TH',
+  },
+  {
+    sortDate: '2026-05-27', dateDisplay: 'May 27',
+    urgency: 'soon', section: 'events', sectionLabel: 'Event',
+    title: 'NonDē 50 Films General Meeting w/ Coffeehouse Cinema',
+    location: 'Online', city: 'Online',
+    desc: 'General meeting for the NonDē 50 Films project with Coffeehouse Cinema. All participants welcome.',
+    links: [],
+    credit: 'CR',
+  },
+  // ─── June 6 additions ─────────────────────────────────────────────
+  {
+    sortDate: '2026-06-06', dateDisplay: 'Jun 6 · 1:30–4:30 PM ET',
+    urgency: 'upcoming', section: 'events', sectionLabel: 'MeetUp',
+    title: 'FilmStack NY Meetup — Tribeca',
+    location: 'Tribeca · New York', city: 'New York',
+    desc: 'FilmStack community meetup in Tribeca. Come connect with fellow cinema-makers and enthusiasts.',
+    links: [{ label: 'RSVP', url: 'https://partiful.com/e/zaKKKWCdhbkQXniQkdnC' }],
+    credit: 'SS',
+  },
+  // ─── Actions ──────────────────────────────────────────────────────
+  {
+    sortDate: '2026-05-25', dateDisplay: 'Rolling',
+    urgency: 'rolling', section: 'actions', sectionLabel: 'Action',
+    title: 'Sign the Pledge to Buy Letterboxd',
+    location: 'Online', city: 'Online',
+    desc: 'Show your support for independent film culture by signing the community pledge to buy Letterboxd.',
+    links: [{ label: 'Sign the pledge', url: 'https://intrinsic.community' }],
+    credit: 'CR',
+  },
+  {
+    sortDate: '2026-05-25', dateDisplay: 'Rolling',
+    urgency: 'rolling', section: 'actions', sectionLabel: 'Watch',
+    title: 'Watch Creative Force on Whush',
+    location: 'Online', city: 'Online',
+    desc: 'Creative Force is now streaming on Whush. Use the link to access it.',
+    links: [{ label: 'Watch on Whush', url: 'https://bit.ly/4u5hM6Z' }],
+    credit: 'CR',
+  },
+  // ─── November ─────────────────────────────────────────────────────
+  {
+    sortDate: '2026-07-31', dateDisplay: 'Jul 31 · 11:59 PM',
+    urgency: 'upcoming', section: 'deadlines', sectionLabel: 'Deadline',
+    title: 'Porto/Post/Doc — Film Submission Deadline',
+    location: 'Online', city: 'Online',
+    venue: 'Porto/Post/Doc Film Festival',
+    desc: 'Film submission deadline for the Porto/Post/Doc Film Festival (Nov 19–28, Porto, Portugal). portopostdoc.com',
+    links: [{ label: 'Submit', url: 'https://portopostdoc.com' }],
+    credit: 'SG',
+  },
+  {
+    sortDate: '2026-11-19', dateDisplay: 'Nov 19–28',
+    urgency: 'upcoming', section: 'screenings', sectionLabel: 'Festival',
+    title: 'Porto/Post/Doc Film Festival',
+    location: 'Porto, Portugal', city: 'Elsewhere',
+    venue: 'Porto/Post/Doc',
+    desc: 'Annual documentary and experimental film festival in Porto, Portugal. Film submission deadline: July 31.',
+    links: [{ label: 'Festival site', url: 'https://portopostdoc.com' }],
+    credit: 'SG',
+  },
+
   // ─── Past (shown when "Show past" is on) ──────────────────────────
   {
     sortDate: '2026-05-18', dateDisplay: 'May 18 · 8:00 PM ET',

@@ -76,7 +76,7 @@ function FilmStackCalendarApp() {
   const [showPast, setShowPast] = React.useState(false);
   const [view, setView] = React.useState('list');
   const [query, setQuery] = React.useState('');
-  const [cities, setCities] = React.useState(() => new Set(['New York', 'Los Angeles', 'Online']));
+  const [cities, setCities] = React.useState(() => new Set(['New York', 'Los Angeles', 'Online', 'Elsewhere']));
   const [expanded, setExpanded] = React.useState(new Set());
   const [filterStuck, setFilterStuck] = React.useState(false);
   const [monthOffset, setMonthOffset] = React.useState(0);
@@ -498,6 +498,19 @@ function SB_AuthMenu({ user, onClose, onSubmit, onMySubmissions }) {
   );
 }
 
+const NAV_URLS = {
+  'Home':               'https://filmstackdailydigest.substack.com/',
+  'FilmStack 1:1':      'https://filmstackdailydigest.substack.com/s/filmstack-11',
+  'FilmStack Calendar': '#',
+  'NonStack Round Up':  'https://filmstackdailydigest.substack.com/s/nonstack-round-up',
+  'Challenges':         'https://filmstackdailydigest.substack.com/t/challenges',
+  'NonDē50':            'https://filmstackdailydigest.substack.com/s/nonde50',
+  'Resources':          'https://filmstackdailydigest.substack.com/t/resources',
+  'Archive':            'https://filmstackdailydigest.substack.com/archive',
+  'Leaderboard':        'https://filmstackdailydigest.substack.com/leaderboard',
+  'About':              'https://filmstackdailydigest.substack.com/about',
+};
+
 function SB_Nav({ t }) {
   const compact = t && t.navDensity === 'compact';
   return (
@@ -508,17 +521,25 @@ function SB_Nav({ t }) {
       }}>
         {window.NAV_SECTIONS.map((s) => {
           const active = s === 'FilmStack Calendar';
+          const href = NAV_URLS[s] || '#';
           return (
-            <div key={s} style={{
-              padding: compact ? '10px 11px' : '12px 14px',
-              fontFamily: SB_FONTS.brand,
-              fontSize: compact ? 12.5 : 13.5,
-              fontWeight: active ? 700 : 500,
-              color: active ? SB_COLORS.ink : SB_COLORS.inkSoft,
-              borderBottom: active ? `3px solid ${SB_COLORS.ink}` : '3px solid transparent',
-              marginBottom: -1, cursor: 'pointer', letterSpacing: -0.1,
-              whiteSpace: 'nowrap',
-            }}>{s}</div>
+            <a key={s} href={href}
+               onClick={active ? (e) => e.preventDefault() : undefined}
+               target={active ? undefined : '_blank'} rel="noreferrer"
+               style={{
+                 display: 'block',
+                 padding: compact ? '10px 11px' : '12px 14px',
+                 fontFamily: SB_FONTS.brand,
+                 fontSize: compact ? 12.5 : 13.5,
+                 fontWeight: active ? 700 : 500,
+                 color: active ? SB_COLORS.ink : SB_COLORS.inkSoft,
+                 borderBottom: active ? `3px solid ${SB_COLORS.ink}` : '3px solid transparent',
+                 marginBottom: -1, cursor: 'pointer', letterSpacing: -0.1,
+                 whiteSpace: 'nowrap', textDecoration: 'none',
+               }}
+               onMouseEnter={(e) => { if (!active) e.currentTarget.style.color = SB_COLORS.ink; }}
+               onMouseLeave={(e) => { if (!active) e.currentTarget.style.color = SB_COLORS.inkSoft; }}
+            >{s}</a>
           );
         })}
       </div>
@@ -546,13 +567,11 @@ function SB_TitleBlock({ user, onSubmit }) {
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'baseline', gap: 8, marginTop: 22, fontFamily: SB_FONTS.brand, fontSize: 12.5, color: SB_COLORS.mute, fontWeight: 500, letterSpacing: 0.04 }}>
         <span>Updated weekly</span>
         <span style={{ color: SB_COLORS.rule }}>│</span>
-        <button style={{
-          appearance: 'none', cursor: 'pointer',
+        <a href="https://filmstackdailydigest.substack.com/about" target="_blank" rel="noreferrer" style={{
           fontFamily: SB_FONTS.brand, fontSize: 12.5, fontWeight: 600,
           background: 'transparent', color: SB_COLORS.ink,
-          border: 'none', padding: 0,
           textDecoration: 'underline', textUnderlineOffset: 3
-        }}>Subscribe to FilmStack Daily Digest</button>
+        }}>Subscribe to FilmStack Daily Digest</a>
       </div>
       <div style={{ marginTop: 36, height: 1, background: SB_COLORS.rule }} />
     </div>);
@@ -667,6 +686,7 @@ function SB_FilterBar({ section, setSection, showPast, setShowPast, cities, setC
     { value: 'New York',    label: 'NYC' },
     { value: 'Los Angeles', label: 'Los Angeles' },
     { value: 'Online',      label: 'Online' },
+    { value: 'Elsewhere',   label: 'Elsewhere' },
   ];
   const toggleCity = (v) => setCities((prev) => {
     const next = new Set(prev);
