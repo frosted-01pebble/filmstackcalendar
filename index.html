@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FilmStack Calendar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg:       #0d0d0c;
+            --surface:  #161412;
+            --surface2: #1e1b19;
+            --border:   #2a2826;
+            --text:     #e5e0d8;
+            --text2:    #9c9690;
+            --text3:    #4a4845;
+            --accent:   #d4714a;
+
+            --c-screenings: #60a5fa;
+            --c-events:     #4ade80;
+            --c-deadlines:  #f87171;
+            --c-actions:    #c084fc;
+
+            --u-today:    #ef4444;
+            --u-soon:     #f97316;
+            --u-ongoing:  #34d399;
+            --u-rolling:  #34d399;
+            --u-upcoming: #9c9690;
+            --u-past:     #3a3835;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ── Top bar ── */
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: #0d0d0c;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            height: 52px;
+        }
+        .topbar-pub {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.01em;
+        }
+        .topbar-date {
+            font-size: 0.65rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text3);
+        }
+        .topbar-sub {
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: var(--text2);
+            text-decoration: none;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 0.3rem 0.9rem;
+            transition: color 0.15s, border-color 0.15s;
+        }
+        .topbar-sub:hover { color: var(--text); border-color: var(--text3); }
+
+        /* ── Hero ── */
+        .hero {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 3.5rem 1.5rem 2.5rem;
+            text-align: center;
+        }
+        .hero-eyebrow {
+            font-size: 0.62rem;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text3);
+            margin-bottom: 1rem;
+        }
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.4rem, 5.5vw, 3.6rem);
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.05;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+        .hero-rule { width: 32px; height: 2px; background: var(--accent); margin: 0 auto 1rem; }
+        .hero-desc {
+            font-size: 0.9rem;
+            color: var(--text2);
+            line-height: 1.7;
+            max-width: 480px;
+            margin: 0 auto 1.75rem;
+        }
+        .hero-cta {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            padding: 0.6rem 1.6rem;
+            border-radius: 24px;
+            text-decoration: none;
+            transition: opacity 0.15s;
+        }
+        .hero-cta:hover { opacity: 0.85; }
+
+        /* ── Filters ── */
+        .filters {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 1.5rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            padding: 0.3rem 0.9rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text2);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .filter-btn:hover { color: var(--text); border-color: var(--text3); }
+        .filter-btn.active { background: var(--surface2); color: var(--text); border-color: var(--text3); }
+
+        .filter-btn[data-section="all"].active    { border-color: var(--text2); }
+        .filter-btn[data-section="screenings"].active { border-color: var(--c-screenings); color: var(--c-screenings); }
+        .filter-btn[data-section="events"].active     { border-color: var(--c-events); color: var(--c-events); }
+        .filter-btn[data-section="deadlines"].active  { border-color: var(--c-deadlines); color: var(--c-deadlines); }
+        .filter-btn[data-section="actions"].active    { border-color: var(--c-actions); color: var(--c-actions); }
+
+        .filter-sep { width: 1px; height: 18px; background: var(--border); }
+
+        .filter-btn.past-toggle { font-style: italic; }
+
+        /* ── Card grid ── */
+        .grid {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 1.5rem 4rem;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1px;
+            background: var(--border);
+        }
+
+        /* ── Card ── */
+        .card {
+            background: var(--bg);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            transition: background 0.15s;
+        }
+        .card:hover { background: var(--surface); }
+        .card.past { opacity: 0.45; }
+
+        .card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+        .section-tag {
+            font-size: 0.6rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 0.15rem 0.5rem;
+            border-radius: 3px;
+        }
+        .tag-screenings { color: var(--c-screenings); background: rgba(96,165,250,0.1); }
+        .tag-events     { color: var(--c-events);     background: rgba(74,222,128,0.1); }
+        .tag-deadlines  { color: var(--c-deadlines);  background: rgba(248,113,113,0.1); }
+        .tag-actions    { color: var(--c-actions);    background: rgba(192,132,252,0.1); }
+
+        .date-badge {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .date-today    { color: var(--u-today); }
+        .date-soon     { color: var(--u-soon); }
+        .date-ongoing  { color: var(--u-ongoing); }
+        .date-rolling  { color: var(--u-rolling); }
+        .date-upcoming { color: var(--u-upcoming); }
+        .date-past     { color: var(--u-past); }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.3;
+        }
+        .card-loc {
+            font-size: 0.72rem;
+            color: var(--text3);
+            font-weight: 400;
+        }
+        .card-desc {
+            font-size: 0.85rem;
+            color: var(--text2);
+            line-height: 1.6;
+            flex: 1;
+        }
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            padding-top: 0.4rem;
+            border-top: 1px solid var(--border);
+            margin-top: auto;
+        }
+        .card-links { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .card-link {
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: var(--text2);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1px;
+            transition: color 0.15s, border-color 0.15s;
+        }
+        .card-link:hover { color: var(--text); border-color: var(--text2); }
+        .card-credit {
+            font-size: 0.6rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: var(--text3);
+        }
+
+        /* ── Empty state ── */
+        .empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 1.5rem;
+            color: var(--text3);
+            font-size: 0.9rem;
+        }
+
+        /* ── Footer ── */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 2rem 1.5rem;
+            text-align: center;
+        }
+        .footer-pub {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text3);
+            margin-bottom: 0.6rem;
+        }
+        .footer-credits {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .footer-credit-chip {
+            font-size: 0.62rem;
+            font-weight: 500;
+            color: var(--text3);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 0.15rem 0.6rem;
+        }
+        .footer-contact {
+            font-size: 0.7rem;
+            color: var(--text3);
+            line-height: 2;
+        }
+        .footer-contact a { color: var(--text3); text-decoration: none; border-bottom: 1px solid var(--border); }
+        .footer-contact a:hover { color: var(--text2); }
+
+        /* ── Mobile ── */
+        @media (max-width: 680px) {
+            .topbar { padding: 0 1rem; }
+            .topbar-date { display: none; }
+            .hero { padding: 2.5rem 1rem 2rem; }
+            .filters { padding: 0 1rem 1.25rem; }
+            .grid { grid-template-columns: 1fr; padding: 0 0 3rem; }
+            .card { padding: 1.25rem 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── TOP BAR ── -->
+<header class="topbar">
+    <span class="topbar-pub">FilmStack Calendar</span>
+    <!-- UPDATE: change date each week -->
+    <span class="topbar-date">Week of May 19, 2026</span>
+    <a class="topbar-sub" href="mailto:filmstackcalendar@gmail.com">Subscribe</a>
+</header>
+
+<!-- ── HERO ── -->
+<div class="hero">
+    <p class="hero-eyebrow">FilmStack Daily Digest</p>
+    <h1 class="hero-title">FilmStack Calendar</h1>
+    <div class="hero-rule"></div>
+    <p class="hero-desc">Screenings, events, deadlines &amp; actions for the film community — curated weekly by the FSDD team.</p>
+    <a class="hero-cta" href="mailto:filmstackdailydigest@gmail.com">Subscribe to FSDD</a>
+</div>
+
+<!-- ── FILTERS ── -->
+<div class="filters" id="filters">
+    <button class="filter-btn active" data-section="all">All</button>
+    <button class="filter-btn" data-section="screenings">Screenings</button>
+    <button class="filter-btn" data-section="events">Events</button>
+    <button class="filter-btn" data-section="deadlines">Deadlines</button>
+    <button class="filter-btn" data-section="actions">Actions</button>
+    <div class="filter-sep"></div>
+    <button class="filter-btn past-toggle" id="past-toggle">Show past</button>
+</div>
+
+<!-- ── CARD GRID ── -->
+<div class="grid" id="grid"></div>
+
+<!-- ── FOOTER ── -->
+<footer>
+    <p class="footer-pub">FilmStack Calendar</p>
+    <div class="footer-credits">
+        <span class="footer-credit-chip">ARB — Alex Rollins Berg</span>
+        <span class="footer-credit-chip">AS — Amanda Sweikow</span>
+        <span class="footer-credit-chip">AV — Ami Vora</span>
+        <span class="footer-credit-chip">CR — Courtney Romano</span>
+        <span class="footer-credit-chip">DS — Danielle A. Scruggs</span>
+        <span class="footer-credit-chip">SG — Sam Gallen</span>
+        <span class="footer-credit-chip">SS — Sara's Soliloquies</span>
+        <span class="footer-credit-chip">TH — Ted Hope</span>
+    </div>
+    <div class="footer-contact">
+        <div>General: <a href="mailto:filmstackdailydigest@gmail.com">filmstackdailydigest@gmail.com</a></div>
+        <div>Submit events: <a href="mailto:filmstackcalendar@gmail.com">filmstackcalendar@gmail.com</a></div>
+    </div>
+</footer>
+
+<script>
+// ── EVENT DATA ────────────────────────────────────────────────────────────────
+// sortDate: ISO string used for sorting (use '2099-12-31' for rolling/open deadlines)
+// urgency: today | soon | ongoing | rolling | upcoming | past
+// section: screenings | events | deadlines | actions
+// ─────────────────────────────────────────────────────────────────────────────
+const EVENTS = [
+
+  // ── ONGOING ──
+  {
+    sortDate: '2026-05-19', dateDisplay: 'Now – May 31', urgency: 'ongoing',
+    section: 'screenings', sectionLabel: 'Screening',
+    title: 'creative force — Cannes International Film Week',
+    location: 'Worldwide Stream',
+    desc: 'A documentary about the birth of the Ukrainian resistance and one man\'s journey across the war zone to deliver a ballistic vest and homemade cookies to his friend on the front lines. Directed by Alex LeMay and Maris Lidaka — 140 hours of footage shot in Ukraine.',
+    links: [], credit: 'SS',
+  },
+  {
+    sortDate: '2026-05-19', dateDisplay: 'Now – May 26', urgency: 'ongoing',
+    section: 'screenings', sectionLabel: 'Screening',
+    title: 'Sophie Letourneur Film Series',
+    location: 'Cinema at L\'Alliance · New York',
+    desc: 'A survey of Letourneur\'s work, opening with the US premiere of L\'Aventura — a beautifully observed, almost diaristic portrait of a family vacation.',
+    links: [{ label: 'More Info', url: 'https://lallianceny.org/event/the-films-of-sophie-letourneur' }],
+    credit: '',
+  },
+  {
+    sortDate: '2026-05-19', dateDisplay: 'Now – May 24', urgency: 'ongoing',
+    section: 'screenings', sectionLabel: 'TV / PBS',
+    title: 'INVISIBLE NATION — PBS',
+    location: 'Nationwide',
+    desc: 'Remaining dates: Wed May 20 — New York 9 PM ET (WLIW) · Thu May 21 — Denver 8 PM MT (PBS12) · Sun May 24 — Columbus 4 PM ET (WOUB). Check local listings.',
+    links: [], credit: 'TH',
+  },
+  {
+    sortDate: '2026-05-19', dateDisplay: 'Now – May 20', urgency: 'ongoing',
+    section: 'screenings', sectionLabel: 'Screening',
+    title: 'COUP 53 — Back in Theaters',
+    location: 'Hudson NY · Seattle · LA · UK · Ireland',
+    desc: 'Edited by Academy Award-winner Walter Murch, featuring Ralph Fiennes. Back in cinemas responding to a surge of public interest driven by current geopolitical events.',
+    links: [{ label: 'Find Screenings & Tickets', url: 'https://www.coup53.com/#screenings' }],
+    credit: 'TH',
+  },
+
+  // ── TODAY: May 19 ──
+  {
+    sortDate: '2026-05-19', dateDisplay: 'Today — May 19', urgency: 'today',
+    section: 'events', sectionLabel: 'Discussion',
+    title: 'Stupid Chats 8: The Cannes Edition',
+    location: 'Cannes · Quinnipiac University · 2:00 PM Local',
+    desc: 'Stupid Chats goes live and in person at Cannes for one day only. Presented by stupid co and hosted by Quinnipiac University, with special guest Sam Pressman.',
+    links: [{ label: 'Sign Up', url: 'https://stupidco.gumroad.com/l/stupidchats8' }],
+    credit: 'SS',
+  },
+  {
+    sortDate: '2026-05-19', dateDisplay: 'Today — May 19', urgency: 'today',
+    section: 'deadlines', sectionLabel: 'Deadline',
+    title: 'Shore Scripts TV Writer Mentorship — Regular Deadline',
+    location: null,
+    desc: 'Only 6 writers selected for this 8-week intensive with showrunners from BRIDGERTON and ARROW, development execs at Universal Pictures, top agents and managers. Final deadline June 29.',
+    links: [
+      { label: 'More Info', url: 'https://www.shorescripts.com/tv-pilot-contest/' },
+      { label: 'Submit', url: 'https://scrybe.to/competitions/tv-writer-mentorship-program' },
+    ],
+    credit: 'SS',
+  },
+  {
+    sortDate: '2026-05-19', dateDisplay: 'Act Now', urgency: 'today',
+    section: 'actions', sectionLabel: 'Action',
+    title: '#BlockTheMerger — Stop Warner / Paramount',
+    location: null,
+    desc: 'This is NOT a done deal. State AGs will pick up the fight — provided enough people sign. Also visit blockthemerger.com to share your story with Future Film Coalition.',
+    links: [
+      { label: 'Robert Reich Petition', url: 'https://actionnetwork.org/forms/attorneys-general-paramount?source=2026-04_V-A1_S-A4_ROI' },
+      { label: 'Free Press Petition', url: 'https://act.freepress.net/sign/block-paramount-warner-bros-merger' },
+      { label: 'blockthemerger.com', url: 'https://blockthemerger.com' },
+    ],
+    credit: 'TH',
+  },
+
+  // ── May 22 ──
+  {
+    sortDate: '2026-05-22', dateDisplay: 'May 22', urgency: 'soon',
+    section: 'deadlines', sectionLabel: 'Festival Deadline',
+    title: 'Bend Film Festival — Extended Deadline',
+    location: null,
+    desc: 'Event dates: Oct. 7–11, 2026.',
+    links: [], credit: '',
+  },
+
+  // ── May 24 ──
+  {
+    sortDate: '2026-05-24', dateDisplay: 'May 24 · 6:15 PM GMT', urgency: 'soon',
+    section: 'screenings', sectionLabel: 'Screening',
+    title: 'MicroCinemaOne Screening',
+    location: 'Pelican House, Cambridge Heath Rd · London',
+    desc: 'The brand new London microcinema\'s second ever screening. Seating limited. Free tickets, BYOB. Nearest stations: Whitechapel, Bethnal Green.',
+    links: [{ label: 'Get Tickets (Free)', url: 'https://luma.com/iakb0qje' }],
+    credit: 'SS',
+  },
+  {
+    sortDate: '2026-05-24', dateDisplay: 'May 24', urgency: 'soon',
+    section: 'deadlines', sectionLabel: 'Festival Deadline',
+    title: 'NYFF64 — Short Film Submissions',
+    location: null,
+    desc: 'Film at Lincoln Center accepts short films (40 min or less) via FilmFreeway. Entry fee $60. All submitted films notified by Aug 17.',
+    links: [], credit: 'TH',
+  },
+
+  // ── May 27 ──
+  {
+    sortDate: '2026-05-27', dateDisplay: 'May 27 · 9:30 AM ET', urgency: 'upcoming',
+    section: 'events', sectionLabel: 'Panel',
+    title: 'Lights, Camera, Community — Miami Film Industry Roundtable',
+    location: 'Coral Gables Art Cinema · Miami',
+    desc: 'An in-depth conversation about the opportunities and challenges of the local film industry, from Miami Film Lab. Only a few spots left!',
+    links: [{ label: 'RSVP', url: 'https://gibdcllqcsp.typeform.com/to/LYOTynAl' }],
+    credit: 'SS',
+  },
+  {
+    sortDate: '2026-05-27', dateDisplay: 'May 27', urgency: 'upcoming',
+    section: 'deadlines', sectionLabel: 'Script Competition',
+    title: 'Austin Film Festival — Script Competition Late Deadline',
+    location: null,
+    desc: 'AFF values a great story above all else. Winners receive the coveted bronze typewriter award plus curated industry opportunities.',
+    links: [{ label: 'Submit', url: 'https://austinfilmfestival.com/about-aff-script-competitions/' }],
+    credit: 'CR',
+  },
+
+  // ── May 29 ──
+  {
+    sortDate: '2026-05-29', dateDisplay: 'May 29 · Early Deadline', urgency: 'upcoming',
+    section: 'deadlines', sectionLabel: 'Script Competition',
+    title: 'Shore Scripts Feature Screenplay Contest — Early Deadline',
+    location: null,
+    desc: 'Regular July 14 · Final Aug 28. QF Oct 6 · SF Nov 13 · Winners Dec 9.',
+    links: [
+      { label: 'More Info', url: 'https://www.shorescripts.com/feature-contest/' },
+      { label: 'Submit', url: 'https://scrybe.to/competitions/shore-scripts-feature-screenplay' },
+    ],
+    credit: 'SS',
+  },
+
+  // ── May 31 ──
+  {
+    sortDate: '2026-05-31', dateDisplay: 'May 31 · App Window Closes', urgency: 'upcoming',
+    section: 'deadlines', sectionLabel: 'Fellowship',
+    title: 'Rideback RISE Fellowship — Application Closes',
+    location: null,
+    desc: 'Best-in-class, mid-career Fellows supported financially, creatively, and entrepreneurially in a rigorous 12-month program. Experienced writers or writer-directors developing an original pilot or feature.',
+    links: [{ label: 'More Info', url: 'https://www.ridebackrise.org/our-program' }],
+    credit: 'AV',
+  },
+
+  // ── June 1 ──
+  {
+    sortDate: '2026-06-01', dateDisplay: 'June 1', urgency: 'upcoming',
+    section: 'deadlines', sectionLabel: 'Festival Deadline',
+    title: 'HollyShorts Film Festival — Extended Deadline',
+    location: null,
+    desc: 'Event dates: Aug. 13–23, 2026.',
+    links: [], credit: '',
+  },
+  {
+    sortDate: '2026-06-01', dateDisplay: 'June 1', urgency: 'upcoming',
+    section: 'deadlines', sectionLabel: 'Submission Deadline',
+    title: 'MMFM 16 Global Creator Pipeline — Call for Submissions',
+    location: null,
+    desc: 'Awards & cash prizes. Designed to keep Miami-Dade\'s creative professionals competitive and connected to global opportunities.',
+    links: [], credit: '',
+  },
+
+  // ── June 3 ──
+  {
+    sortDate: '2026-06-03', dateDisplay: 'June 3', urgency: 'upcoming',
+    section: 'events', sectionLabel: 'Showcase',
+    title: 'Miami Film Lab Actor Showcase',
+    location: 'Coral Gables Art Cinema · Miami',
+    desc: 'Miami Film Lab\'s actor showcase.',
+    links: [{ label: 'Apply', url: 'https://tally.so/r/Medqe8' }],
+    credit: 'SS',
+  },
+  {
+    sortDate: '2026-06-03', dateDisplay: 'June 3 · Regular ($30)', urgency: 'upcoming',
+    section: 'deadlines', sectionLabel: 'Script Competition',
+    title: 'The Inspired Screenwriting Competition — Regular Deadline',
+    location: null,
+    desc: 'Submit the first 20 pages of your feature screenplay. Late deadline July 1 ($35). Amplifying bold, unique new voices.',
+    links: [{ label: 'inspiredscreenwriting.com', url: 'https://www.inspiredscreenwriting.com' }],
+    credit: 'AS · SS',
+  },
+
+  // ── June 4 ──
+  {
+    sortDate: '2026-06-04', dateDisplay: 'June 4', urgency: 'upcoming',
+    section: 'screenings', sectionLabel: 'Screening',
+    title: 'Cannes Dogs 2: The Poo Edition Tour — London',
+    location: 'Rio Cinema, Dalston · London',
+    desc: 'stupid co presents a dog-friendly premiere of The Woman Who Can Read the Minds of Dogs, plus the second edition of the Cannes Dogs zine.',
+    links: [
+      { label: 'stupidco.biz/events', url: 'http://stupidco.biz/events' },
+      { label: 'Rio Cinema', url: 'https://riocinema.org.uk/Rio.dll/WhatsOn?f=2511374' },
+    ],
+    credit: 'SS',
+  },
+
+  // ── June 5 ──
+  {
+    sortDate: '2026-06-05', dateDisplay: 'June 5 · Late Deadline', urgency: 'upcoming',
+    section: 'deadlines', sectionLabel: 'Festival Deadline',
+    title: 'Woodstock Film Festival — Late Deadline',
+    location: null,
+    desc: 'FilmFreeway final deadline: June 12.',
+    links: [], credit: '',
+  },
+
+  // ── June 10 ──
+  {
+    sortDate: '2026-06-10', dateDisplay: 'June 10 · 12 PM ET / 9 AM PT', urgency: 'upcoming',
+    section: 'events', sectionLabel: 'Webinar · Free',
+    title: 'New Rules of Engagement: Growing Audiences & Winning Funding',
+    location: 'Online',
+    desc: 'Why reach metrics no longer satisfy funders, the 5 questions before spending on distribution, real campaign data, and a practical framework for any budget or stage. Live Q&A. All registrants get the recording.',
+    links: [{ label: 'Reserve Free Spot', url: 'https://hub.plusmedia.solutions/Rules-of-Engagement-Webinar' }],
+    credit: 'SG',
+  },
+
+  // ── June 11 ──
+  {
+    sortDate: '2026-06-11', dateDisplay: 'June 11 · Dusk / 7:30 PM ET', urgency: 'upcoming',
+    section: 'screenings', sectionLabel: 'Screening',
+    title: 'Inaugural WTF-Stop LES Microcinema Screening',
+    location: 'Lower East Side Community Garden · New York',
+    desc: 'Alan McIntyre\'s new pop-up microcinema for New York FilmStack. Adam Kritzer cohosts. Garden hang at dusk, film once it\'s dark. BYOB & bring a folding chair. Space very limited.',
+    links: [{ label: 'RSVP', url: 'https://partiful.com/e/MAHnDC0ph1WM6T3Op7MN' }],
+    credit: 'SS',
+  },
+  {
+    sortDate: '2026-06-11', dateDisplay: 'June 11', urgency: 'upcoming',
+    section: 'screenings', sectionLabel: 'Screening',
+    title: 'Cannes Dogs 2: The Poo Edition Tour — New York',
+    location: 'Posteritati · New York',
+    desc: 'stupid co at Posteritati for an all dog-movie-poster gallery and more to be announced.',
+    links: [
+      { label: 'stupidco.biz/events', url: 'http://stupidco.biz/events' },
+      { label: 'Posteritati', url: 'https://posteritati.com/cannes-dogs-2' },
+    ],
+    credit: 'SS',
+  },
+
+  // ── June 12 ──
+  {
+    sortDate: '2026-06-12', dateDisplay: 'June 12', urgency: 'upcoming',
+    section: 'events', sectionLabel: 'Festival',
+    title: 'Tribeca Storytelling Summit — Luminaries',
+    location: 'New York · Tribeca Film Festival',
+    desc: 'Ted Hope (FSDD) shares his vision of the future of film alongside Rebecca Miller & Josh Safdie, Zach Woods, Zach Braff, Myha\'la, Lily Rabe & Hamish Linklater, Philip Barantini, Ron Perlman, Dan Houser, and Michael Sarnoski.',
+    links: [], credit: '',
+  },
+
+  // ── June 15 ──
+  {
+    sortDate: '2026-06-15', dateDisplay: 'June 15', urgency: 'upcoming',
+    section: 'deadlines', sectionLabel: 'Festival Deadline',
+    title: 'LdnDocs — Regular Deadline',
+    location: null,
+    desc: 'Late deadline: Aug. 15 · Notifications: Sept. 15.',
+    links: [], credit: '',
+  },
+
+  // ── June 16 ──
+  {
+    sortDate: '2026-06-16', dateDisplay: 'June 16 · 10 AM PT / 1 PM ET / 6 PM GMT', urgency: 'upcoming',
+    section: 'events', sectionLabel: 'Webinar · Free',
+    title: 'Breaking Into TV Writing — Beth Schwartz (ARROW, SWEET TOOTH)',
+    location: 'Online · Shore Scripts',
+    desc: 'An inside look at how the TV industry works: getting staffed, standing out, building a lasting career. All registrants get the recording.',
+    links: [{ label: 'Register (Free)', url: 'https://zoom.us/webinar/register/WN_e5O9DHXQRY2dJ-N4xG_unQ' }],
+    credit: 'SS',
+  },
+
+  // ── June 29 ──
+  {
+    sortDate: '2026-06-29', dateDisplay: 'June 29 · Final Deadline', urgency: 'upcoming',
+    section: 'deadlines', sectionLabel: 'Deadline',
+    title: 'Shore Scripts TV Writer Mentorship — Final Deadline',
+    location: null,
+    desc: 'Last chance to enter. EMMY & Golden Globe Winning Judges.',
+    links: [{ label: 'Submit', url: 'https://scrybe.to/competitions/tv-writer-mentorship-program' }],
+    credit: 'SS',
+  },
+
+  // ── July 6 ──
+  {
+    sortDate: '2026-07-06', dateDisplay: 'July 6 · Regular', urgency: 'upcoming',
+    section: 'deadlines', sectionLabel: 'Application',
+    title: 'Square Peg Social Application',
+    location: null,
+    desc: 'Extended: Aug. 7 · Notifications: Oct. 5 · Event dates: Nov. 5–9, 2026.',
+    links: [], credit: 'TH',
+  },
+
+  // ── July 30 ──
+  {
+    sortDate: '2026-07-30', dateDisplay: 'July 30', urgency: 'upcoming',
+    section: 'events', sectionLabel: 'Festival',
+    title: 'Oak Cliff Film Festival',
+    location: null,
+    desc: 'Event dates: July 30 – Aug. 2, 2026.',
+    links: [], credit: '',
+  },
+
+  // ── September 15 ──
+  {
+    sortDate: '2026-09-15', dateDisplay: 'Sept 15 · Apply by June 15', urgency: 'upcoming',
+    section: 'events', sectionLabel: 'Retreat',
+    title: 'Lab Results: Writers Retreat — Miami Film Lab',
+    location: 'Palm Lodge · Miami',
+    desc: 'Four screenwriters selected; each receives a $500 honorarium. Submit the first 15 pages of your screenplay — 10 finalists submit full scripts. Application fee: $10.',
+    links: [{ label: 'Apply (Deadline June 15)', url: 'https://tally.so/r/Medqe8' }],
+    credit: 'SS',
+  },
+
+  // ── October 24 ──
+  {
+    sortDate: '2026-10-24', dateDisplay: 'October 24', urgency: 'upcoming',
+    section: 'events', sectionLabel: 'Festival',
+    title: 'The NonDe Shorts Festival (NSF)',
+    location: 'Reading Biscuit Factory · UK',
+    desc: 'The first NonDe short film festival, designed as an open blueprint for regional, hyper-local replication.',
+    links: [{ label: 'Submit on FilmFreeway', url: 'https://filmfreeway.com/NonDeShortsFestival' }],
+    credit: 'SS',
+  },
+
+  // ── December 4 ──
+  {
+    sortDate: '2026-12-04', dateDisplay: 'December 4, 2026', urgency: 'upcoming',
+    section: 'deadlines', sectionLabel: 'Fellowship Deadline',
+    title: 'NRDC Rewrite the Future — Climate Storytelling Fellowship ($20K × 3)',
+    location: null,
+    desc: 'Three recipients receive $20,000 each plus six months of mentorship. Scripts hosted on the Black List; writers retain all rights. With the Black List, CAA Community + Impact, NBCUniversal, and the Redford Center.',
+    links: [{ label: 'Apply on the Black List', url: 'https://blcklst.com/programs/2027-nrdc-climate-storytelling-fellowship' }],
+    credit: 'TH',
+  },
+
+  // ── ROLLING ──
+  {
+    sortDate: '2099-12-31', dateDisplay: 'Rolling', urgency: 'rolling',
+    section: 'deadlines', sectionLabel: 'Competition',
+    title: '2026 Slamdance Screenplay Competition',
+    location: null,
+    desc: 'Open for submissions.',
+    links: [{ label: 'Submit', url: 'https://slamdance.com/screenplay-submit/' }],
+    credit: '',
+  },
+  {
+    sortDate: '2099-12-31', dateDisplay: 'Rolling', urgency: 'rolling',
+    section: 'deadlines', sectionLabel: 'Grant',
+    title: 'IDA Emergency Assistance Grant',
+    location: null,
+    desc: 'New emergency grant from the International Documentary Association.',
+    links: [{ label: 'More Info', url: 'https://www.documentary.org/ida-emergency-assistance-program' }],
+    credit: '',
+  },
+  {
+    sortDate: '2099-12-31', dateDisplay: 'Limited Window', urgency: 'rolling',
+    section: 'deadlines', sectionLabel: 'Open Call',
+    title: 'Culture House Talent Pool Open Call',
+    location: null,
+    desc: 'For collaborative, expansive, imaginative creatives interested in making new immersive storyworlds. Application window is limited; no set deadline.',
+    links: [{ label: 'More Info', url: 'https://culture.house/open-call' }],
+    credit: '',
+  },
+  {
+    sortDate: '2099-12-31', dateDisplay: 'Rolling · Up to $100K', urgency: 'rolling',
+    section: 'deadlines', sectionLabel: 'Grant',
+    title: 'Impact Partners Development Fund',
+    location: null,
+    desc: 'Grants up to $100,000. Global/international — open to projects outside the US.',
+    links: [{ label: 'impactpartnersfilm.com', url: 'http://impactpartnersfilm.com/' }],
+    credit: 'SS',
+  },
+  {
+    sortDate: '2099-12-31', dateDisplay: 'Open Now · LA', urgency: 'rolling',
+    section: 'deadlines', sectionLabel: 'Internship',
+    title: 'ARRAY (Ava DuVernay) — Internships in LA',
+    location: 'Los Angeles · Undergrad / Grad Students',
+    desc: 'Open roles: Social Media, Digital Content, Social Impact & Film Education, Media Events Intern. Email resume + cover letter + desired position to info@arraynow.com if your school isn\'t on Handshake.',
+    links: [
+      { label: 'Apply via Handshake', url: 'https://joinhandshake.com' },
+      { label: 'info@arraynow.com', url: 'mailto:info@arraynow.com' },
+    ],
+    credit: 'SS',
+  },
+
+  // ── PAST ──
+  {
+    sortDate: '2026-05-16', dateDisplay: 'May 16 (Past)', urgency: 'past',
+    section: 'events', sectionLabel: 'Lab',
+    title: 'NonDē Creative Development: Projects in Motion Reading Workshop',
+    location: 'Online · Zoom',
+    desc: 'Scripts read: The Ballad of Anna Judge by Andrea DeGette and Saved Too Late by Gitanjali Kapila. Readers included Shahjehan Khan of Deli Boys (Hulu) and Succession (HBO).',
+    links: [], credit: 'SS',
+  },
+  {
+    sortDate: '2026-05-17', dateDisplay: 'May 17 (Past)', urgency: 'past',
+    section: 'events', sectionLabel: 'MeetUp',
+    title: 'FilmStack LA In-Person Meetup',
+    location: 'Los Angeles',
+    desc: 'Hosted by Jon Stahl. More LA meetups coming.',
+    links: [], credit: 'SS',
+  },
+  {
+    sortDate: '2026-05-18', dateDisplay: 'May 18 (Past)', urgency: 'past',
+    section: 'deadlines', sectionLabel: 'Application',
+    title: 'Film Independent Fiction & Documentary Producing Labs 2026',
+    location: null,
+    desc: 'Non-member deadline was May 4. Film Independent Member extended deadline was May 18.',
+    links: [{ label: 'More Info', url: 'https://www.filmindependent.org/programs/artist-development/fiction-producing-lab/' }],
+    credit: '',
+  },
+];
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+const grid        = document.getElementById('grid');
+const filterBtns  = document.querySelectorAll('.filter-btn[data-section]');
+const pastToggle  = document.getElementById('past-toggle');
+
+let currentSection = 'all';
+let showPast       = false;
+
+function sectionTagClass(section) {
+    return { screenings: 'tag-screenings', events: 'tag-events', deadlines: 'tag-deadlines', actions: 'tag-actions' }[section] || '';
+}
+
+function makeCard(ev) {
+    const isPast = ev.urgency === 'past';
+    const links  = ev.links.map(l =>
+        `<a class="card-link" href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`
+    ).join('');
+
+    return `
+    <article class="card${isPast ? ' past' : ''}" data-section="${ev.section}" data-urgency="${ev.urgency}">
+        <div class="card-top">
+            <span class="section-tag ${sectionTagClass(ev.section)}">${ev.sectionLabel}</span>
+            <span class="date-badge date-${ev.urgency}">${ev.dateDisplay}</span>
+        </div>
+        <h2 class="card-title">${ev.title}</h2>
+        ${ev.location ? `<p class="card-loc">${ev.location}</p>` : ''}
+        <p class="card-desc">${ev.desc}</p>
+        <div class="card-footer">
+            <div class="card-links">${links}</div>
+            ${ev.credit ? `<span class="card-credit">${ev.credit}</span>` : ''}
+        </div>
+    </article>`;
+}
+
+function render() {
+    const sorted = [...EVENTS].sort((a, b) => a.sortDate.localeCompare(b.sortDate));
+
+    const filtered = sorted.filter(ev => {
+        if (!showPast && ev.urgency === 'past') return false;
+        if (currentSection !== 'all' && ev.section !== currentSection) return false;
+        return true;
+    });
+
+    if (filtered.length === 0) {
+        grid.innerHTML = '<div class="empty">No events in this category.</div>';
+    } else {
+        grid.innerHTML = filtered.map(makeCard).join('');
+    }
+}
+
+filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentSection = btn.dataset.section;
+        render();
+    });
+});
+
+pastToggle.addEventListener('click', () => {
+    showPast = !showPast;
+    pastToggle.textContent = showPast ? 'Hide past' : 'Show past';
+    pastToggle.classList.toggle('active', showPast);
+    render();
+});
+
+render();
+</script>
+
+</body>
+</html>
